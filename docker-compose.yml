@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:13.2
+    container_name: faucet-database
+    restart: always
+    environment:
+      POSTGRES_USER: faucet
+      POSTGRES_PASSWORD: faucet
+      POSTGRES_DB: faucet
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    hostname: database
+    ports:
+      - 5432:5432

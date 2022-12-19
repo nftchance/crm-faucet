@@ -1,0 +1,13 @@
+APScheduler==3.9.1.post1
+asgiref==3.5.2
+Django==4.1.4
+django-apscheduler==0.6.2
+django-rest-framework==0.1.0
+djangorestframework==3.14.0
+psycopg2==2.9.5
+pytz==2022.7
+pytz-deprecation-shim==0.1.0.post0
+six==1.16.0
+sqlparse==0.4.3
+tzdata==2022.7
+tzlocal==4.2
