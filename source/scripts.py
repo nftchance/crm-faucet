@@ -1,6 +1,8 @@
 import django
 import requests
 
+from django.db.models import Q, Count
+
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import DjangoJobStore
@@ -48,16 +50,13 @@ NFTINSPECT_CONTRACT_ADDRESSES = [
 
 BALANCES_QUERY = """
     SELECT
-    USER_ADDRESS,
+    USER_ADDRESS AS ADDRESS,
     BALANCE,
     BLOCK_TIMESTAMP
     FROM
         ethereum.core.fact_eth_balances
         WHERE
-        USER_ADDRESS IN (
-            '0xa9c1f99531dce1ebb8404e4087364be996f784bb',
-            '0x62180042606624f02d8a130da8a3171e9b33894d'
-        )
+        USER_ADDRESS IN ({0})
         QUALIFY ROW_NUMBER() OVER (PARTITION BY USER_ADDRESS ORDER BY BLOCK_TIMESTAMP DESC) = 1
 """
 
@@ -118,6 +117,23 @@ scheduler = BackgroundScheduler()
 
 provider = Web3(HTTPProvider(f'https://eth-mainnet.g.alchemy.com/v2/LrOnpxvPgi2TEiVVpH0G-QgkhYG-ygPr'))
 ns = ENS.fromWeb3(provider)
+
+def get_confident_source(wallet_address):
+    sources = Source.objects.filter(
+        holdings__wallet_address=wallet_address,
+    )
+    
+    # Get the source with the most references to the address if there are multiple.
+    if len(set(sources.values_list("holdings__wallet_address", flat=True))) > 1:
+        sources = sources.filter(
+            holdings__wallet_address=wallet_address,
+        ).annotate(
+            wallet_address_count=Count("holdings__wallet_address")
+        ).order_by("-wallet_address_count")
+
+    source = sources.first()
+
+    return source
 
 ## For source that has not had a collection members lookup in the last X
 @util.close_old_connections
@@ -198,12 +214,43 @@ def get_nftinspect_collection_members(contract_address):
             source.save()
 
 # @util.close_old_connections
-# def get_wallet_address_from_holdings():
-#     query_results = shroom.query(BALANCES_QUERY)
+# def get_nametag_collection_members():
+#     list_url = "https://nametag.org/api/v2/spaces"
+#     response = requests.get(list_url)
 
-#     # for source/holdings with no eth balance, insert in query and run that shit
+#     if not response.status_code == 200:
+#         return
 
-#     # TODO : Figure out how to get the right source :)
+#     response_data = response.json()
+#     space_ids = [space["id"] for space in response_data["spaces"]]
+#     print(response_data)
+
+
+@util.close_old_connections
+def get_wallet_address_from_holdings():
+    # Get the balance of all the wallets that have a holding in the database.
+    query_results = shroom.query(BALANCES_QUERY.format(f"""
+        {','.join([f'\'{holding.token_id}\'' for holding in (
+            SourceHolding.objects
+                .filter(contract="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE")
+                .values_list("wallet_address", flat=True)
+                .distinct()
+            )])
+        }"""))
+
+    for record in query_results.records:
+        # Get the source based on the address that was provided.
+        source = get_confident_source(record["address"])
+
+        # Make sure the ETH holding has been created and is updated on the source.
+        holding, created = source.holdings.get_or_create(
+            chain="ETH",
+            contract="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            token_id=None,
+            wallet_address=record["address"],
+        )
+        holding.balance = record["balance"]
+        holding.save()
 
 @util.close_old_connections
 def get_ens_query():
