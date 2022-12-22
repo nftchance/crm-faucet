@@ -257,7 +257,7 @@ def update_source_identifier(source, source_type, identifier):
         source.identifiers.filter(source_type=source_type).delete()
 
     identifier, created = source.identifiers.get_or_create(
-        source_type="twitter_handle",
+        source_type=source_type,
         identifier=identifier,
     )
 
@@ -463,7 +463,6 @@ def get_lens_handle():
         update_source_identifier(source, "lens_handle", record["handle"])
 
         source.save()
-        print('LENS CREATED. Source id:', source.id)
 
 @util.close_old_connections
 def delete_old_job_executions(max_age=60 * 60):
@@ -512,7 +511,6 @@ class JobManager:
             trigger=CronTrigger(hour="*/12"),
             max_instances=1,
             replace_existing=True,
-            next_run_time=datetime.now(),
         )
         print("Added: `get_ens_query`")
 
@@ -533,13 +531,15 @@ class JobManager:
             trigger=CronTrigger(hour="*/12"),
             max_instances=1,
             replace_existing=True,
-            next_run_time=datetime.now(),
         )
         print("Added: `get_lens_handle`")
 
         try:
             print("Starting scheduler...")
             scheduler.start()
+
+            for job in scheduler.get_jobs():
+                job.modify(next_run_time=datetime.now())
         except KeyboardInterrupt:
             print("Stopping scheduler...")
             scheduler.shutdown()
