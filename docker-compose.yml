@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: faucet
       POSTGRES_DB: faucet
     volumes:
-      - ./database:/var/lib/postgresql/data
+      - ./api/database:/var/lib/postgresql/data
     hostname: database
     ports:
       - 5432:5432

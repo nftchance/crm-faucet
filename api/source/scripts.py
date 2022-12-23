@@ -411,10 +411,10 @@ def get_ens_query():
             identifiers__source_type="twitter_handle",
             identifiers__identifier=record["twitter"],
         ).exists():
-            source = Source.objects.get(
+            source = Source.objects.filter(
                 identifiers__source_type="twitter_handle",
                 identifiers__identifier=record["twitter"],
-            )
+            ).first()
         else:
             source = Source.objects.create()
             source.identifiers.get_or_create(
