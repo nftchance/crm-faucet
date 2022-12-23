@@ -1,44 +1,47 @@
 import { useState } from "react"
 
-import TagInput from "../Input/TagInput";
+import { Select, MenuItem, Slider } from "@mui/material"
 
 import "./Form.css"
 
+type FormState = {
+    bucket: string,
+    requiredContactField: string,
+    niceToHaveContactField: string,
+    numberOfContacts: number,
+    requiredContactTags: string[],
+    niceToHaveContactTags: string[],
+}
+
+const InitialState: FormState = {
+    bucket: "nft",
+    requiredContactField: "",
+    niceToHaveContactField: "",
+    numberOfContacts: 500,
+    requiredContactTags: ["Reddit", "Twitter", "Discord"],
+    niceToHaveContactTags: ["Telegram"]
+}
+
 const Form = () => {
-    const [ 
-        bucket, setBucket 
-    ] = useState<string>("nft")
-    const [ 
-        requiredContactField, setRequiredContactField 
-    ] = useState<string>("")
-    const [ 
-        niceToHaveContactField, setNiceToHaveContactField 
-    ] = useState<string>("")
-    const [ 
-        numberOfContacts, setNumberOfContacts 
-    ] = useState<number>(1)
-    const [ 
-        requiredContactTags, setRequiredContactTags 
-    ] = useState<string[]>([])
-    const [ 
-        niceToHaveContactTags, setNiceToHaveContactTags 
-    ] = useState<string[]>([])
+    const [ formState, setFormState ] = useState(InitialState);
 
     const numberFormat = Intl.NumberFormat('en-US');
-    
-    // const [ niceToHaveContacts, setNiceToHaveContacts ] = useState([])
-    // const [ requiredContacts, setRequiredContacts ] = useState([])
 
-    const onBucketChange = (e: any) => {
-        setBucket(e.target.value)
+    const onFormChange = (event: any, field: string) => {
+        console.log('form change', event.target.value, field)
+        setFormState({
+            ...formState,
+            [field]: event.target.value
+        })
     }
 
-    const onRequiredContactChange = (e: any) => {
-        setRequiredContactField(e.target.value)
-    }
+    const onRemoveTag = (tag: any, field: string) => {
+        if(field !== "requiredContactTags" && field !== "niceToHaveContactTags") return;
 
-    const onNiceContactChange = (e: any) => {
-        setRequiredContactField(e.target.value)
+        setFormState((prevState) => ({
+            ...prevState,
+            [field]: (prevState[field] as string[]).filter((t: any) => t !== tag)
+        }))
     }
 
     const onExport = () => {
@@ -59,49 +62,91 @@ const Form = () => {
                 <div className="form-panel form-inputs">
                     <div className="form-input">
                         <p>Behavior Segment</p>
-                        <select 
+                        <Select 
                             name="bucket" 
-                            value={bucket}
-                            onChange={(e) => onBucketChange(e)}
+                            value={formState.bucket}
+                            onChange={(e) => onFormChange(e, "bucket")}
+                            style={{width: "100%"}}
                         >
-                            <option value="nft">NFT</option>
-                            <option value="defi">DeFi</option>
-                            <option value="daos">DAOs</option>
-                            <option value="social">Social</option>
-                            <option value="governance">Governance</option>
-                            <option value="developer">Developer</option>
-                        </select>
+                            <MenuItem value="nft">NFT</MenuItem>
+                            <MenuItem value="defi">DeFi</MenuItem>
+                            <MenuItem value="daos">DAOs</MenuItem>
+                            <MenuItem value="social">Social</MenuItem>
+                            <MenuItem value="governance">Governance</MenuItem>
+                            <MenuItem value="developer">Developer</MenuItem>
+                        </Select>
                     </div>
 
                     <div className="form-input">
                         <p>Required Contact Fields</p>
-                        <TagInput
-                            tags={requiredContactTags}
-                            setTags={setRequiredContactTags}
-                            placeholder="Search..."
-                            value={requiredContactField}
-                            setValue={setRequiredContactField}
-                        />
+                        <div className="input-tagged">
+                            <div className="input-tags">
+                                {formState.requiredContactTags.map((tag, index) => (
+                                    <span key={index} className="tag">
+                                        <span>{tag}</span>
+                                        <button
+                                            className="tag-close-icon"
+                                            onClick={() => onRemoveTag(tag, "requiredContactTags")}
+                                        >
+                                            <svg viewBox="0 0 8 8" width="8" height="10" stroke="#00000035" strokeWidth="2" fill="#00000035" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M1 1 L7 7 M7 1 L1 7" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                            <input 
+                                type="text" 
+                                placeholder="Search..."
+                                value={formState.requiredContactField}
+                                onChange={(e) => onFormChange(e, "requiredContactField")}
+                            />
+                        </div>
                     </div>
 
                     <div className="form-input">
                         <p>Nice to Have Contact Fields</p>
-                        <input 
-                            type="text" 
-                            placeholder="Search..." 
-                            value={niceToHaveContactField}
-                            onChange={(e) => onNiceContactChange(e)}
-                        />
+                        <div className="input-tagged">
+                            <div className="input-tags">
+                                {formState.niceToHaveContactTags.map((tag, index) => (
+                                     <span key={index} className="tag">
+                                        <span>{tag}</span>
+                                        <button
+                                            className="tag-close-icon"
+                                            onClick={() => onRemoveTag(tag, "niceToHaveContactTags")}
+                                        >
+                                            <svg viewBox="0 0 8 8" width="8" height="10" stroke="#00000035" strokeWidth="2" fill="#00000035" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M1 1 L7 7 M7 1 L1 7" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                            <input 
+                                type="text" 
+                                placeholder="Search..." 
+                                value={formState.niceToHaveContactField}
+                                onChange={(e) => onFormChange(e, "niceToHaveContactField")}
+                            />
+                        </div>
                     </div>
                     <div className="form-input">
                         <p>Number of Contacts</p>
                         <div className="slider-container">
                             <span>
-                                {numberFormat.format(numberOfContacts)}
+                                {numberFormat.format(formState.numberOfContacts)}
                             </span>
-                            <span className="slider">
-                                
-                            </span>
+                            <Slider 
+                                size="small"
+                                value={formState.numberOfContacts} 
+                                onChange={(e) => onFormChange(e, "numberOfContacts")} 
+                                step={1}
+                                min={1}
+                                max={5000}
+                                style={{
+                                    color: "#00000010"
+                                }}
+                            />
                             <span>
                                 {numberFormat.format(5000)}
                             </span>
