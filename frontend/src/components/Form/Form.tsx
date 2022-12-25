@@ -1,51 +1,79 @@
 import { useState } from "react"
 
-import { Select, MenuItem, Slider } from "@mui/material"
+import { Theme, useTheme } from '@mui/material/styles';
+import { Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Slider } from "@mui/material"
 
 import "./Form.css"
 
-type FormState = {
-    bucket: string,
-    requiredContactField: string,
-    niceToHaveContactField: string,
-    numberOfContacts: number,
-    requiredContactTags: string[],
-    niceToHaveContactTags: string[],
+interface FormState {
+    bucket: string;
+    requiredContactField: string;
+    niceToHaveContactField: string;
+    numberOfContacts: number;
+    requiredContactFields: string[];
+    optionalContactFields: string[];
 }
 
-const InitialState: FormState = {
-    bucket: "nft",
-    requiredContactField: "",
-    niceToHaveContactField: "",
-    numberOfContacts: 500,
-    requiredContactTags: ["Reddit", "Twitter", "Discord"],
-    niceToHaveContactTags: ["Telegram"]
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+const buckets = [
+    'NFT',
+    'DeFi',
+    'DAOs',
+    'Social',
+    'Governance',
+    'Developer',
+]
+
+const contactFields = [
+    'Reddit',
+    'Twitter',
+    'Discord',
+    'Telegram',
+    'Email',
+]
+
+function getStyles(name: string, value: readonly string[], theme: Theme) {
+    return {
+        fontWeight:
+            value.indexOf(name) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
 }
 
 const Form = () => {
-    const [ formState, setFormState ] = useState(InitialState);
+    const theme = useTheme();
 
-    const numberFormat = Intl.NumberFormat('en-US');
+    const [formState, setFormState] = useState<FormState>({
+        bucket: buckets[0],
+        requiredContactField: "",
+        niceToHaveContactField: "",
+        numberOfContacts: 500,
+        requiredContactFields: ["Reddit", "Twitter", "Discord"],
+        optionalContactFields: ["Telegram"]
+    });
 
-    const onFormChange = (event: any, field: string) => {
-        console.log('form change', event.target.value, field)
+    const numberFormatter = new Intl.NumberFormat('en-US', {
+        style: 'decimal',
+        maximumFractionDigits: 0,
+    });
+
+    const handleChange = (value: any, name: string) => {
         setFormState({
             ...formState,
-            [field]: event.target.value
+            [name]: typeof value === 'string' ? value.split(',') : value
         })
-    }
-
-    const onRemoveTag = (tag: any, field: string) => {
-        if(field !== "requiredContactTags" && field !== "niceToHaveContactTags") return;
-
-        setFormState((prevState) => ({
-            ...prevState,
-            [field]: (prevState[field] as string[]).filter((t: any) => t !== tag)
-        }))
-    }
-
-    const onExport = () => {
-        return;
     }
 
     return (
@@ -53,108 +81,85 @@ const Form = () => {
             <div className="form-left">
                 <div className="form-panel">
                     <p>
-                        <strong>Notice: </strong> 
-                        The Cogs Faucet is a constant work in progress with new datasets being added on a regular basis. 
+                        <strong>Notice: </strong>
+                        The Cogs Faucet is a constant work in progress with new datasets being added on a regular basis.
                         Make sure to check back in the future so that are always targeting your audience with the best information and assistance possible.
                     </p>
                 </div>
 
                 <div className="form-panel form-inputs">
-                    <div className="form-input">
-                        <p>Behavior Segment</p>
-                        <Select 
-                            name="bucket" 
+                    <FormControl sx={{ width: "100%" }}>
+                        <InputLabel id="required-fields">Behavior Segments</InputLabel>
+                        <Select name="bucket"
                             value={formState.bucket}
-                            onChange={(e) => onFormChange(e, "bucket")}
-                            style={{width: "100%"}}
+                            onChange={(e) => handleChange(e.target.value as string, "bucket")}
+                            input={<OutlinedInput id="bucket" label="Behavior Segments" />}
                         >
-                            <MenuItem value="nft">NFT</MenuItem>
-                            <MenuItem value="defi">DeFi</MenuItem>
-                            <MenuItem value="daos">DAOs</MenuItem>
-                            <MenuItem value="social">Social</MenuItem>
-                            <MenuItem value="governance">Governance</MenuItem>
-                            <MenuItem value="developer">Developer</MenuItem>
+                            {buckets.map((bucket) => (
+                                <MenuItem key={bucket} value={bucket}>{bucket}</MenuItem>
+                            ))}
                         </Select>
-                    </div>
+                    </FormControl>
+
+                    <FormControl sx={{ width: "100%" }}>
+                        <InputLabel id="required-fields">Required Fields</InputLabel>
+                        <Select labelId="required-fields" id="required-fields" MenuProps={MenuProps} multiple
+                            value={formState.requiredContactFields}
+                            onChange={(e) => handleChange(e.target.value as string, "requiredContactFields")}
+                            input={<OutlinedInput id="select-required-fields" label="Required Fields" />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    {selected.map((value) => (
+                                        <Chip key={value} label={value} />
+                                    ))}
+                                </Box>
+                            )}
+                        >
+                            {contactFields.map((field) => (
+                                <MenuItem key={field} value={field} style={getStyles(field, formState.requiredContactFields, theme)}>
+                                    {field}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl sx={{ width: "100%" }}>
+                        <InputLabel id="optional-fields">Optional Fields</InputLabel>
+                        <Select labelId="optional-fields" id="optional-fields" MenuProps={MenuProps} multiple
+                            value={formState.optionalContactFields}
+                            onChange={(e) => handleChange(e.target.value as string, "optionalContactFields")}
+                            input={<OutlinedInput id="select-optional-fields" label="Optional Fields" />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    {selected.map((value) => (
+                                        <Chip key={value} label={value} />
+                                    ))}
+                                </Box>
+                            )}
+                        >
+                            {contactFields.map((field) => (
+                                <MenuItem key={field} value={field} style={getStyles(field, formState.optionalContactFields, theme)}>
+                                    {field}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
                     <div className="form-input">
-                        <p>Required Contact Fields</p>
-                        <div className="input-tagged">
-                            <div className="input-tags">
-                                {formState.requiredContactTags.map((tag, index) => (
-                                    <span key={index} className="tag">
-                                        <span>{tag}</span>
-                                        <button
-                                            className="tag-close-icon"
-                                            onClick={() => onRemoveTag(tag, "requiredContactTags")}
-                                        >
-                                            <svg viewBox="0 0 8 8" width="8" height="10" stroke="#00000035" strokeWidth="2" fill="#00000035" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M1 1 L7 7 M7 1 L1 7" />
-                                            </svg>
-                                        </button>
-                                    </span>
-                                ))}
-                            </div>
-                            <input 
-                                type="text" 
-                                placeholder="Search..."
-                                value={formState.requiredContactField}
-                                onChange={(e) => onFormChange(e, "requiredContactField")}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-input">
-                        <p>Nice to Have Contact Fields</p>
-                        <div className="input-tagged">
-                            <div className="input-tags">
-                                {formState.niceToHaveContactTags.map((tag, index) => (
-                                     <span key={index} className="tag">
-                                        <span>{tag}</span>
-                                        <button
-                                            className="tag-close-icon"
-                                            onClick={() => onRemoveTag(tag, "niceToHaveContactTags")}
-                                        >
-                                            <svg viewBox="0 0 8 8" width="8" height="10" stroke="#00000035" strokeWidth="2" fill="#00000035" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M1 1 L7 7 M7 1 L1 7" />
-                                            </svg>
-                                        </button>
-                                    </span>
-                                ))}
-                            </div>
-                            <input 
-                                type="text" 
-                                placeholder="Search..." 
-                                value={formState.niceToHaveContactField}
-                                onChange={(e) => onFormChange(e, "niceToHaveContactField")}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-input">
-                        <p>Number of Contacts</p>
+                        <InputLabel id="required-fields" sx={{ mb: 0.5 }}>Number of Contacts</InputLabel>
                         <div className="slider-container">
-                            <span>
-                                {numberFormat.format(formState.numberOfContacts)}
-                            </span>
-                            <Slider 
+                            <span>{numberFormatter.format(formState.numberOfContacts)}</span>
+                            <Slider step={1} min={1} max={5000} style={{ color: "#00000010" }}
                                 size="small"
-                                value={formState.numberOfContacts} 
-                                onChange={(e) => onFormChange(e, "numberOfContacts")} 
-                                step={1}
-                                min={1}
-                                max={5000}
-                                style={{
-                                    color: "#00000010"
-                                }}
+                                value={formState.numberOfContacts}
+                                onChange={(e, value) => handleChange(value as number, "numberOfContacts")}
                             />
-                            <span>
-                                {numberFormat.format(5000)}
-                            </span>
+                            <span>{numberFormatter.format(5000)}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div className="form-panel form-summary-panel">
                 <div className="form-summary">
                     <p className="form-summary-title">
