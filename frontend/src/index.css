@@ -1,5 +1,9 @@
+* { 
+  font-family: 'Iosevka Web', sans-serif !important;
+}
+
 :root {
-  font-family: Iosevka;
+  font-family: 'Iosevka Web', sans-serif !important;
   color: rgba(0, 0, 0, 0.87);
   background-color: #FFFFFF;
 
@@ -57,6 +61,11 @@ nav .logo img {
   margin-bottom: 3px;
 }
 
+button.cta { 
+  background: rgb(19, 19, 255);
+  color: #fff;
+}
+
 button.secondary {
   background: #FFFFFF;
 }
@@ -64,6 +73,11 @@ button.secondary {
 button.primary {
   background: #F1F1F1;
   color: #000000;
+}
+
+button.cta:hover { 
+  background: rgb(16, 16, 210);
+  color: #fff;
 }
 
 button.primary:hover {

@@ -49,7 +49,7 @@ function App() {
         <div className="container">
           <a href="/" className="logo">
             <img src={drop} alt="logo" />
-            <h4>Drop</h4>
+            <h5>Faucet</h5>
           </a>
         </div>
       </nav>
@@ -141,16 +141,6 @@ function App() {
       <div className="jumbo">
         <div className="container">
           <h2>“According to studies, account-based closed-won opportunities have, on average, a 33% higher average contract value.”</h2>
-        </div>
-      </div>
-
-      <div className="jumbo bottom">
-        <div className="container">
-          <div className="content">
-            <h2>Your next 10,000 crypto native leads are a slider away.</h2>
-            {/* big slider */}
-            <button className="primary" onClick={() => window.scrollTo(0, 0)}>Get audience</button>
-          </div>
         </div>
       </div>
 

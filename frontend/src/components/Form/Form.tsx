@@ -26,7 +26,17 @@ const MenuProps = {
     },
 };
 
-const buckets = [
+const sizes: {
+    [key: string]: number;
+} = {
+    Sample: 5,
+    Personal: 100,
+    Medium: 1000,
+    Large: 2500,
+    Enterprise: 5000,
+}
+
+const buckets: string[] = [
     'NFT',
     'DeFi',
     'DAOs',
@@ -35,7 +45,8 @@ const buckets = [
     'Developer',
 ]
 
-const contactFields = [
+const contactFields: string[] = [
+    'Ethereum Wallet',
     'Reddit',
     'Twitter',
     'Discord',
@@ -59,15 +70,16 @@ const Form = () => {
         bucket: buckets[0],
         requiredContactField: "",
         niceToHaveContactField: "",
-        numberOfContacts: 500,
-        requiredContactFields: ["Reddit", "Twitter", "Discord"],
+        numberOfContacts: 5,
+        requiredContactFields: ["Ethereum Wallet", "Twitter", "Discord"],
         optionalContactFields: ["Telegram"]
     });
 
-    const numberFormatter = new Intl.NumberFormat('en-US', {
-        style: 'decimal',
-        maximumFractionDigits: 0,
-    });
+    const freeContacts = 5;
+    const paidContacts = formState.numberOfContacts > freeContacts ? formState.numberOfContacts - freeContacts : 0;
+
+    const unitPrice = 0.0005;
+    const totalPrice = (unitPrice * paidContacts).toFixed(4);
 
     const handleChange = (value: any, name: string) => {
         setFormState({
@@ -80,14 +92,23 @@ const Form = () => {
         <div className="form">
             <div className="form-left">
                 <div className="form-panel">
-                    <p>
-                        <strong>Notice: </strong>
-                        The Cogs Faucet is a constant work in progress with new datasets being added on a regular basis.
-                        Make sure to check back in the future so that are always targeting your audience with the best information and assistance possible.
-                    </p>
+                    <p><small><strong>Notice:</strong> The faucet is currently in beta. Please be patient as we work out the kinks. The maximum download is limited to 5,000 contacts per transaction to prevent extreme contact competition so that you can grow even faster!</small></p>
                 </div>
 
                 <div className="form-panel form-inputs">
+                    <FormControl sx={{ width: "100%" }}>
+                        <InputLabel id="contacts">Contacts</InputLabel>
+                        <Select name="numberOfContacts"
+                            value={formState.numberOfContacts}
+                            onChange={(e) => handleChange(e.target.value as string, "numberOfContacts")}
+                            input={<OutlinedInput id="contacts" label="Contacts" />}
+                        >
+                            {Object.keys(sizes).map((size) => (
+                                <MenuItem key={size} value={sizes[size]}>{sizes[size]} | {size}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
                     <FormControl sx={{ width: "100%" }}>
                         <InputLabel id="required-fields">Behavior Segments</InputLabel>
                         <Select name="bucket"
@@ -145,75 +166,7 @@ const Form = () => {
                         </Select>
                     </FormControl>
 
-                    <div className="form-input">
-                        <InputLabel id="required-fields" sx={{ mb: 0.5 }}>Number of Contacts</InputLabel>
-                        <div className="slider-container">
-                            <span>{numberFormatter.format(formState.numberOfContacts)}</span>
-                            <Slider step={1} min={1} max={5000} style={{ color: "#00000010" }}
-                                size="small"
-                                value={formState.numberOfContacts}
-                                onChange={(e, value) => handleChange(value as number, "numberOfContacts")}
-                            />
-                            <span>{numberFormatter.format(5000)}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="form-panel form-summary-panel">
-                <div className="form-summary">
-                    <p className="form-summary-title">
-                        Buckets
-                    </p>
-                    <p>NFT</p>
-                    <p>151</p>
-                </div>
-                <div className="form-summary">
-                    <p className="form-summary-title">
-                        Required Contacts
-                    </p>
-                    <div className="form-summary-contacts">
-                        <div>
-                            <p>Reddit</p>
-                            <p>151</p>
-                        </div>
-                        <div>
-                            <p>Twitter</p>
-                            <p>151</p>
-                        </div>
-                        <div>
-                            <p>Discord</p>
-                            <p>151</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="form-summary">
-                    <p className="form-summary-title">
-                        Nice to Have Contacts
-                    </p>
-                    <div className="form-summary-contacts">
-                        <div>
-                            <p>Reddit</p>
-                            <p>151</p>
-                        </div>
-                        <div>
-                            <p>Twitter</p>
-                            <p>151</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="form-summary checkout-cta">
-                    <div className="checkout-price">
-                        <span className="form-summary-title">
-                            12.1
-                        </span>
-                        <span> ETH</span>
-                    </div>
-                    <button className="primary">
-                        Export contacts
-                    </button>
+                    <button className="cta">{totalPrice} <small>ETH</small> | Export Contacts</button>
                 </div>
             </div>
         </div>
