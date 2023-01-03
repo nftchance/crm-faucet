@@ -1,8 +1,6 @@
 import type { DraggableId, DraggableLocation } from 'react-beautiful-dnd';
 
-interface Id { 
-    id: string
-}
+type Id = string;
 
 interface AuthorColors {
     soft: string,
@@ -20,6 +18,7 @@ interface Author {
 interface Quote {
     id: Id,
     content: string,
+    author: Author
 }
 
 interface Dragging {
@@ -43,11 +42,11 @@ interface Column {
 }
 
 interface ColumnMap {
-    [columnId: string]: Column
+    [columnId: Id]: Column
 }
 
 interface TaskMap {
-    [taskId: string]: Task
+    [taskId: Id]: Task
 }
 
 interface Entities {

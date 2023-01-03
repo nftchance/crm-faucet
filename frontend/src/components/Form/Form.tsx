@@ -1,7 +1,5 @@
 import { useState } from "react"
 
-import { FormControl, MenuItem, Select } from "@mui/material"
-
 import { DragDropContext, DragStart, DraggableLocation, DropResult } from 'react-beautiful-dnd';
 
 import Priorities from "../Priorities/Priorities"
