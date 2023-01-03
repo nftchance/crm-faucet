@@ -1,223 +1,76 @@
+.blue { 
+  color: #FFFFFF;
+}
+
 .container {
   padding: 2rem;
   margin: 0 auto;
   max-width: 1220px;
 }
 
-.jumbo {
-  background-color: #E6F3FF;
-  color: #fff;
-  align-items: center;
+/* create x y variable that will be used to move the after element circle around slightly */
+
+:root {
+  --x: 0;
+  --y: 0;
 }
 
-.jumbo h2 {
-  max-width: 780px;
-  font-size: 2.5rem;
-  color: #000;
+/* use counter to keep track of x y */
+
+body {
+  counter-reset: x y;
 }
 
-.jumbo.bottom { 
-  background: #FFFFFF;
-  color: #000;
-}
+/* use counter to move the after element circle around slightly */
 
 .hero {
+  margin: 40px;
+  background: #0860F8;
+  border-radius: 60px;
   min-height: 720px;
   position: relative;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 35%;
-  left: 0;
-  right: 0;
-  background-image: url('./assets/hero-background.png');
-  background-size: cover;
-  z-index: -1;
-}
-
-.hero .content {
-  max-width: 920px;
-  margin-bottom: 60px;
-}
-
-.hero .content p.lead {
-  font-size: 24px;
-}
-
-.import {
-  display: grid;
-  grid-template-columns: 5fr auto;
-  grid-gap: 1rem;
-  min-height: 420px;
-  align-items: center;
-  padding-bottom: 80px;
+  min-height: calc(100vh - 80px);
   position: relative;
+  overflow: hidden;
 }
 
-.import::before {
+.hero .content { 
+  position: relative;
+  z-index: 1;
+}
+
+.hero .content h1 { 
+  color: #fff;
+  margin-bottom: 3rem;
+}
+
+.hero::before { 
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('./assets/import-button-background.png');
-  background-size: 50% auto;
-  background-position: 40% 90%;
-  background-repeat: no-repeat;
-  z-index: -1;
+  background-image: url(../overlay-lines.svg);
+  background-repeat: repeat;
+  z-index: 0;
 }
 
-.import h3 {
-  margin-bottom: 0px;
-}
-
-.import .contacts {
-  background: #FFFFFF;
-  padding: 1em;
-  border-radius: 3px;
-  margin-left: 1em;
-  border: 1px solid #00000010;
-}
-
-.import .contacts .contact {
-  align-items: center;
-  margin-bottom: 5px;
-  display: grid;
-  grid-template-columns: 100px 60px auto;
-}
-
-.import .contacts .contact p {
-  font-size: 10px;
-  margin-right: 10px;
-  margin-bottom: 0px;
-}
-
-.twitter {
-  background-color: #E6F3FF;
-  padding-top: 60px;
-}
-
-.twitter .tweets {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 1rem;
-}
-
-.twitter .tweets .tweet {
-  border-radius: 3px;
-  background-color: #fff;
-  padding: .75rem;
-  border-color: #e6ecf0;
-  border-style: solid;
-  border-width: 1px;
-  align-items: center;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease-in-out;
-}
-
-.twitter .tweets .tweet:hover {
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-}
-
-.tweet-header {
-  display: flex;
-  align-items: center;
-}
-
-.tweet-header * {
-  margin: 0;
-}
-
-.twitter .tweets .tweet .tweet-header h4 {
-  display: inline-flex;
-  margin-left: 10px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.twitter .tweets .tweet .tweet-header img {
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-}
-
-.twitter .tweets .tweet .tweet-content {
-  font-size: 10px;
-}
-
-.twitter .tweets .tweet .tweet-content p {
-  margin-bottom: 0px;
-}
-
-.twitter .twitter-cta {
-  max-width: 70%;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 10fr 2fr;
-  align-items: center;
-}
-
-.twitter .twitter-cta button {
-  float: right;
-}
-
-.buckets {
-  display: grid;
-  grid-template-columns: 4fr 4fr;
-  grid-gap: 3rem;
-  min-height: 420px;
-  align-items: center;
-  padding-bottom: 80px;
-  position: relative;
-}
-
-.buckets .bucket-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-}
-
-.buckets .bucket-options .bucket-option {
-  border: 1px solid #00000010;
-  border-radius: 3px;
-  font-size: 14px;
-  padding: .75em;
-}
-
-.buckets .bucket-options .bucket-option p {
-  margin: 0;
-  margin-left: 40px;
-}
-
-.buckets .bucket-options .bucket-option {
-  position: relative;
-}
-
-.buckets .bucket-options .bucket-option::before {
-  position: absolute;
+.hero::after { 
   content: "";
-  top: calc(50% - 4px);
-  left: 20px;
-  width: 8px;
-  height: 8px;
-  background: limegreen;
+  position: absolute;
+  top: -75vw;
+  right: -75vw;
+  width: 130vw;
+  height: 130vw;
   border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  background-repeat: repeat;
+  z-index: 0;
+  transform: translate(var(--x), var(--y));
+  overflow: hidden;
 }
 
-.buckets .bucket-options .bucket-option.out::before {
-  background: red;
-}
-
-@media (max-width: 768px) {
-  .hero .content {
-    max-width: 100%;
-  }
-
-  .twitter .tweets {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.hero label { 
+  margin-bottom: 10px;
 }

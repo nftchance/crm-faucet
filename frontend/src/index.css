@@ -1,4 +1,4 @@
-* { 
+* {
   font-family: 'Iosevka Web', sans-serif !important;
 }
 
@@ -42,7 +42,7 @@ button {
   transition: background-color 0.2s ease-in-out;
 }
 
-nav .container { 
+nav .container {
   padding-block: 0;
 }
 
@@ -52,7 +52,7 @@ nav .logo {
   margin-top: 20px;
 }
 
-nav .logo h4 { 
+nav .logo h4 {
   margin: 0;
 }
 
@@ -61,7 +61,7 @@ nav .logo img {
   margin-bottom: 3px;
 }
 
-button.cta { 
+button.cta {
   background: rgb(19, 19, 255);
   color: #fff;
 }
@@ -75,7 +75,7 @@ button.primary {
   color: #000000;
 }
 
-button.cta:hover { 
+button.cta:hover {
   background: rgb(16, 16, 210);
   color: #fff;
 }
@@ -111,34 +111,22 @@ h6 {
   line-height: 1.2;
 }
 
-h1 {
-  font-size: 3rem;
-}
-
-h2 {
-  font-size: 2.5rem;
-}
-
-h3 {
-  font-size: 2rem;
-}
-
-h4 {
-  font-size: 1.5rem;
-}
-
-h5 {
-  font-size: 1.25rem;
-}
-
-h6 {
-  font-size: 1rem;
-}
-
-input {
+input,
+select {
   font-family: inherit;
+  width: 100%;
+  outline: none;
+  padding: 10px 30px;
+  
+  background: rgba(255, 255, 255, .1);
+  backdrop-filter: blur(30px);
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  color: rgba(255, 255, 255, .65);
 }
 
-.footer a  {
-  margin-right: 10px; 
+select {}
+
+.footer a {
+  margin-right: 10px;
 }
