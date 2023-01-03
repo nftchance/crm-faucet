@@ -1,2 +1,2 @@
 export const grid: number = 8;
-export const borderRadius: number = 2;
+export const borderRadius: number = 7;

@@ -1,6 +1,6 @@
 import type { Column, Entities, TaskMap, Task, Id } from './types';
 
-const tasks: Task[] = Array.from({ length: 20 }, (v, k) => k).map(
+const tasks: Task[] = Array.from({ length: 7 }, (v, k) => k).map(
     (val: number): Task => ({
         id: `task-${val}`,
         content: `Task ${val}`,
