@@ -12,11 +12,11 @@ interface Props {
 }
 
 const Container = styled.div`
-  background-color: rgba(255,255,255,.3);
+  background-color: rgba(255,255,255,.15);
   color: rgba(255,255,255,.65);
   padding: 5px 30px;
   margin-bottom: 10px;
-  border-radius: 7px;
+  border-radius: 5px;
   user-select: none;
   border: 1px solid rgba(255,255,255,.3);
   position: relative;
@@ -42,7 +42,6 @@ const Container = styled.div`
     width: 15px;
     height: 15px;
     pointer-events: none;
-    // make it a hamburger svg icon background
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.65)' width='18px' height='18px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
 }

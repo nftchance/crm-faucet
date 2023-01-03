@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
+import { Input, FormControl, Select, MenuItem, OutlinedInput } from "@mui/material";
 import { DragDropContext, DragStart, DraggableLocation, DropResult } from 'react-beautiful-dnd';
 
 import { mutliDragAwareReorder } from '../Priorities/utils';
@@ -15,7 +16,17 @@ import "./Form.css"
 const getTasks = (entities: Entities, columnId: Id): Task[] =>
     entities.columns[columnId].taskIds.map((taskId: Id): Task => entities.tasks[taskId]);
 
+const sizes = {
+    Sample: 3,
+    Small: 5,
+    Medium: 10,
+    Large: 20,
+    XLarge: 50,
+    XXLarge: 100,
+}
+
 const Form = () => {
+    const [size, setSize] = useState(sizes.Sample);
     const [entities, setEntities] = useState<Entities>(initial);
     const [draggingTaskId, setDraggingTaskId] = useState<Id | null>(null);
 
@@ -48,6 +59,21 @@ const Form = () => {
 
     return (
         <div className="form">
+            <div className="form__input">
+                <FormControl fullWidth>
+                    <label htmlFor="size">Size</label>
+                    <Select
+                        value={size}
+                        onChange={(e) => setSize(Number(e.target.value))}
+                        className="select"
+                    >
+                        {Object.entries(sizes).map(([key, value]) => (
+                            <MenuItem key={key} value={value}>{key}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </div>
+
             <DragDropContext
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}

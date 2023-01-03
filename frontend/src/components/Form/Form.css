@@ -57,24 +57,38 @@ p.form-summary-title {
     align-items: center;
 }
 
-.checkout-price > .form-summary-title {
+.checkout-price>.form-summary-title {
     font-size: 24px;
 }
 
-/* SLIDER */
-.slider-container {
-    display: grid;
-    grid-template-columns: min-content auto min-content;
-    grid-template-rows: auto;
-    grid-gap: 30px;
+/* Change color of material UI select to white */
+
+.MuiSelect-select {
+    color: rgba(255, 255, 255, .65) !important;
+    background: rgba(255, 255, 255, .15) !important;
+    backdrop-filter: blur(10px);
+    padding: 5px 30px !important;
+    border-radius: 5px;
+    border: 1px solid transparent !important;
 }
 
-span.MuiSlider-thumb {
-    background-color: black;
+.MuiSelect-select:hover {
+    color: #FFFFFF !important;
 }
 
-span.MuiSlider-thumb:hover,
-span.MuiSlider-thumb:active,
-span.MuiSlider-thumb:focus {
-    box-shadow: 0px 0px 0px 8px rgb(0 0 0 / 10%);
+.select .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, .3) !important;
+    border-width: 1px !important;
+}
+
+.select:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 1) !important;
+}
+
+.select svg { 
+    color: rgba(255, 255, 255, .65) !important;
+}
+
+.select:hover svg { 
+    color: #FFFFFF !important;
 }

@@ -24,9 +24,9 @@ body {
 /* use counter to move the after element circle around slightly */
 
 .hero {
-  margin: 40px;
+  margin: 20px;
   background: #0860F8;
-  border-radius: 60px;
+  border-radius: 40px;
   min-height: 720px;
   position: relative;
   min-height: calc(100vh - 80px);
