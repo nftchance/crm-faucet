@@ -15,23 +15,16 @@ const taskMap: TaskMap = tasks.reduce(
     {},
 );
 
-const todo: Column = {
-    id: 'todo',
-    title: 'To do',
+const priorities: Column = {
+    id: 'priorities',
+    title: 'Priorities',
     taskIds: tasks.map((task: Task): Id => task.id),
 };
 
-const done: Column = {
-    id: 'done',
-    title: 'Done',
-    taskIds: [],
-};
-
 const entities: Entities = {
-    columnOrder: [todo.id, done.id],
+    columnOrder: [priorities.id],
     columns: {
-        [todo.id]: todo,
-        [done.id]: done,
+        [priorities.id]: priorities
     },
     tasks: taskMap,
 };
