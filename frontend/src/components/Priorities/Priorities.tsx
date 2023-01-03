@@ -22,9 +22,7 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.label`
-  font-weight: bold;
-`;
+const Title = styled.label``;
 
 const TaskList = styled.div`
   min-height: 200px;

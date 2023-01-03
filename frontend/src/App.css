@@ -3,25 +3,10 @@
 }
 
 .container {
-  padding: 2rem;
+  padding: 1.5rem 3rem;
   margin: 0 auto;
   max-width: 1220px;
 }
-
-/* create x y variable that will be used to move the after element circle around slightly */
-
-:root {
-  --x: 0;
-  --y: 0;
-}
-
-/* use counter to keep track of x y */
-
-body {
-  counter-reset: x y;
-}
-
-/* use counter to move the after element circle around slightly */
 
 .hero {
   margin: 20px;
@@ -59,7 +44,7 @@ body {
 .hero::after { 
   content: "";
   position: absolute;
-  top: -75vw;
+  top: -55vw;
   right: -75vw;
   width: 130vw;
   height: 130vw;
@@ -67,10 +52,22 @@ body {
   background: rgba(255,255,255,0.2);
   background-repeat: repeat;
   z-index: 0;
-  transform: translate(var(--x), var(--y));
   overflow: hidden;
+  animation: move 10s ease-in-out infinite;
 }
 
 .hero label { 
   margin-bottom: 10px;
 }
+
+@keyframes move { 
+  0% { 
+    transform: translateY(0);
+  }
+  50% { 
+    transform: translateY(-30px);
+  }
+  100% { 
+    transform: translateY(0);
+  }
+} 

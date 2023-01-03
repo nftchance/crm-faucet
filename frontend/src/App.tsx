@@ -1,3 +1,4 @@
+import Navbar from "./components/Navbar/Navbar";
 import Form from "./components/Form/Form";
 
 import './App.css'
@@ -8,8 +9,9 @@ function App() {
       <div className="hero blue">
         <div className="content">
           <div className="container">
+            <Navbar />
+
             <h1>Grow faster with instant access to contact information and user behavior of ideal users for your Web3 product.</h1>
-            
             <Form />
           </div>
         </div>
