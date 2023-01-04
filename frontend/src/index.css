@@ -117,7 +117,7 @@ select {
   width: 100%;
   outline: none;
   padding: 10px 30px;
-  
+
   background: rgba(255, 255, 255, .1);
   backdrop-filter: blur(30px);
   border-radius: 5px;
@@ -127,6 +127,24 @@ select {
 
 select {}
 
-.footer a {
-  margin-right: 10px;
+footer {
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr;
+  align-items: center;
+  text-align: right;
+}
+
+footer p { 
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  footer {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "logo"
+      "social"
+      "links";
+    text-align: left;
+  }
 }

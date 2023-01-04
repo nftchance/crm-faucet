@@ -40,13 +40,13 @@ function App() {
             ))}
           </div>
         </div>
-      </div> 
-      
-      <div className="footer container">
-        <p>Copyright © 2022 <a href="https://www.usecogs.xyz">Cogs</a>. All rights reserved.</p>
-        <a href="https://www.usecogs.xyz/terms-of-service/">Terms of Service</a>
-        <a href="https://www.usecogs.xyz/privacy-policy/">Privacy Policy</a>
-      </div> */}
+      </div>*/}
+
+      <footer className="container">
+        <p>Copyright © 2022 <a target="_blank" rel="noreferrer" href="https://www.usecogs.xyz">Cogs</a>. All rights reserved.</p>
+        <a target="_blank" rel="noreferrer" href="https://www.usecogs.xyz/terms-of-service/">Terms of Service</a>
+        <a target="_blank" rel="noreferrer" href="https://www.usecogs.xyz/privacy-policy/">Privacy Policy</a>
+      </footer>
     </div>
   )
 }
