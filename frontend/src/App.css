@@ -17,6 +17,7 @@
   overflow: hidden;
   box-shadow: 0px 0px 15px 15px rgba(8, 96, 248, 0.18);
   margin-bottom: 40px;
+  /* ease up and in */
 }
 
 .hero .content { 
@@ -38,9 +39,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url(../overlay-lines.svg);
+  background-image: url(../noise.png);
+  background-size: auto 100%;
   background-repeat: repeat;
   z-index: 0;
+  opacity: 0.05;
+  animation: move 100s linear infinite;
+}
+
+@keyframes move { 
+  0% { 
+    background-position: 0 0;
+  }
+  100% { 
+    background-position: 100px 0;
+  }
 }
 
 .hero::after { 
@@ -55,7 +68,7 @@
   background-repeat: repeat;
   z-index: 0;
   overflow: hidden;
-  animation: move 10s ease-in-out infinite;
+  animation: move 60s ease-in-out infinite;
 }
 
 .hero label { 
