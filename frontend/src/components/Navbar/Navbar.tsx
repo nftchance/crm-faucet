@@ -5,10 +5,10 @@ import "./Navbar.css"
 const Navbar = () => {
     return (
         <nav>
-            <h3>
+            <h3><a href="/">
                 <img src={drop} alt="drop" />
                 Faucet
-            </h3>
+            </a></h3>
         </nav>
     )
 }
