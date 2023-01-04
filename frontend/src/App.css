@@ -82,6 +82,10 @@
   .hero .content h1 { 
     max-width: 100%;
   }
+
+  .import .container .content { 
+    grid-template-columns: 1fr;
+  }
 }
 
 @keyframes move { 
