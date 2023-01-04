@@ -5,7 +5,7 @@ import { DragDropContext, DragStart, DraggableLocation, DropResult } from 'react
 
 import { mutliDragAwareReorder } from '../Priorities/utils';
 
-import initial from "../Priorities/data"
+import { entities as initialEntities, sizes } from "../Priorities/data"
 import Priorities from "../Priorities/Priorities"
 
 import type { Task, Id, Entities } from '../Priorities/types';
@@ -16,18 +16,9 @@ import "./Form.css"
 const getTasks = (entities: Entities, columnId: Id): Task[] =>
     entities.columns[columnId].taskIds.map((taskId: Id): Task => entities.tasks[taskId]);
 
-const sizes = {
-    Sample: 3,
-    Small: 5,
-    Medium: 10,
-    Large: 20,
-    XLarge: 50,
-    XXLarge: 100,
-}
-
 const Form = () => {
     const [size, setSize] = useState(sizes.Sample);
-    const [entities, setEntities] = useState<Entities>(initial);
+    const [entities, setEntities] = useState<Entities>(initialEntities);
     const [draggingTaskId, setDraggingTaskId] = useState<Id | null>(null);
 
     const onDragStart = (start: DragStart) => {
@@ -67,8 +58,14 @@ const Form = () => {
                         onChange={(e) => setSize(Number(e.target.value))}
                         className="select"
                     >
-                        {Object.entries(sizes).map(([key, value]) => (
-                            <MenuItem key={key} value={value}>{key}</MenuItem>
+                        {/* Create select options with the name and then size value */}
+                        {Object.entries(sizes).map(([name, value]) => (
+                            <MenuItem key={value} value={value}>
+                                <div className="select__option">
+                                    <span>{name}:</span>
+                                    <span>{value}</span>
+                                </div>
+                            </MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -93,7 +90,7 @@ const Form = () => {
                 })}
             </DragDropContext>
 
-            <button className="cta">{10.2} <small>ETH</small> | Export Contacts</button>
+            <button className="primary">{10.2} <small>ETH</small> | Export Contacts</button>
         </div>
     )
 }

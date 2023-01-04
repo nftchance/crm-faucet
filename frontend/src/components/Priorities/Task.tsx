@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { Draggable } from 'react-beautiful-dnd';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import type { DraggableProvided } from 'react-beautiful-dnd';
 import type { Task as TaskType } from './types';
 
@@ -37,13 +39,16 @@ const Container = styled.div`
   &::after {
     content: '';
     position: absolute;
-    top: calc(50% - 10px);
+    top: calc(50% - 6px);
     right: 15px;
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.65)' width='18px' height='18px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
+    background-position: center;
+    background-size: 12px;
+    // make hamburger bars
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,.65)' width='18px' height='18px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/%3E%3C/svg%3E");
 }
 
   &:focus::after,
@@ -87,7 +92,13 @@ const Task = (props: Props) => {
                         role="button"
                         aria-label={props.task.content}
                     >
-                        <div>{props.task.content}</div>
+                        <div>
+                            <FontAwesomeIcon icon={['fab', props.task.id as any]} style={{
+                                marginRight: "10px",
+                                width: "12px",
+                            }} />
+                            {props.task.content}
+                        </div>
                     </Container>
                 );
             }}
