@@ -42,10 +42,9 @@ const priorities: Column = {
 
 const sizes = {
     Sample: 5,
-    Medium: 10,
-    Large: 20,
-    XLarge: 50,
-    XXLarge: 100,
+    Personal: 500,
+    Business: 2500,
+    Enterprise: 5000,
 }
 
 const entities: Entities = {

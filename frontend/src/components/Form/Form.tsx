@@ -21,6 +21,8 @@ const Form = () => {
     const [entities, setEntities] = useState<Entities>(initialEntities);
     const [draggingTaskId, setDraggingTaskId] = useState<Id | null>(null);
 
+    const price = size > 5 ? size * 0.0005 : 0; // 0.0005 is the price per unit
+
     const onDragStart = (start: DragStart) => {
         setDraggingTaskId(start.draggableId);
     }
@@ -90,7 +92,7 @@ const Form = () => {
                 })}
             </DragDropContext>
 
-            <button className="primary">{10.2} <small>ETH</small> | Export Contacts</button>
+            <button className="primary">{price} <small>ETH</small> | Export Contacts</button>
         </div>
     )
 }
