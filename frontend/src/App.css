@@ -12,21 +12,23 @@
   margin: 20px;
   background: #0860F8;
   border-radius: 40px;
-  min-height: 720px;
   position: relative;
-  min-height: calc(100vh - 80px);
   position: relative;
   overflow: hidden;
+  box-shadow: 0px 0px 15px 15px rgba(8, 96, 248, 0.18);
+  margin-bottom: 40px;
 }
 
 .hero .content { 
   position: relative;
   z-index: 1;
+  margin-bottom: 40px;
 }
 
 .hero .content h1 { 
   color: #fff;
   margin-bottom: 3rem;
+  max-width: 600px;
 }
 
 .hero::before { 
@@ -60,14 +62,20 @@
   margin-bottom: 10px;
 }
 
+@media screen and (max-width: 900px) { 
+  .hero .content h1 { 
+    max-width: 100%;
+  }
+}
+
 @keyframes move { 
   0% { 
     transform: translateY(0);
   }
   50% { 
-    transform: translateY(-30px);
+    transform: translateY(-5%);
   }
   100% { 
     transform: translateY(0);
   }
-} 
+}

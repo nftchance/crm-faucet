@@ -12,6 +12,7 @@ function App() {
             <Navbar />
 
             <h1>Grow faster with instant access to contact information and user behavior of ideal users for your Web3 product.</h1>
+
             <Form />
           </div>
         </div>
