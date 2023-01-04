@@ -17,30 +17,17 @@ function App() {
           </div>
         </div>
       </div>
-
-      {/* <div className="container">
-        <div className="import">
+      <div className="import">
+        <div className="container">
           <div className="content">
-            <h3>Import your new audience contacts into your favorite CRM.</h3>
-            <p>We provide the leads, you turn them into evangelists. Exports from the Cogs Faucet are immediately interoperable with all major contact relationship managers.</p>
-          </div>
-
-          <div className="contacts">
-            <div className="contact">
-              <strong><p>Email</p></strong>
-              <strong><p>Twitter</p></strong>
-              <strong><p>Address</p></strong>
+            <div>
+              <h2>Import your new audience contacts into your favorite CRM.</h2>
+              <p>We provide the leads, you turn them into evangelists. Export all the contacts in a single click and take them with you.</p>
+              <button className="cta" onClick={() => window.scrollTo(0, 0)}>+ Export Contacts</button>
             </div>
-            {contacts.map((contact) => (
-              <div className="contact">
-                <p>{contact.email}</p>
-                <p>{contact.twitter}</p>
-                <p>{contact.address}</p>
-              </div>
-            ))}
           </div>
         </div>
-      </div>*/}
+      </div>
 
       <footer className="container">
         <p>Copyright © 2022 <a target="_blank" rel="noreferrer" href="https://www.usecogs.xyz">Cogs</a>. All rights reserved.</p>

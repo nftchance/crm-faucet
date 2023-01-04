@@ -16,7 +16,7 @@ const Container = styled.div`
   color: rgba(255,255,255,.65);
   padding: 5px 30px;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: 9px;
   user-select: none;
   border: 1px solid rgba(255,255,255,.3);
   position: relative;

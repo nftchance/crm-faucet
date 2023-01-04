@@ -62,6 +62,22 @@
   margin-bottom: 10px;
 }
 
+.import { 
+  box-shadow: 0px 0px 15px 15px rgba(8, 96, 248, 0.06);
+  margin: 20px;
+  border-radius: 40px;
+  padding-block: 40px;
+}
+
+.import .container .content { 
+  display: grid;
+  grid-template-columns: 6fr 6fr;
+}
+
+.import button { 
+  margin-top: 20px;
+}
+
 @media screen and (max-width: 900px) { 
   .hero .content h1 { 
     max-width: 100%;
