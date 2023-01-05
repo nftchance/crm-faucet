@@ -1,3 +1,7 @@
+import { Link } from 'react-router-dom';
+
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 import drop from '../../assets/white-drop.svg';
 
 import "./Navbar.css"
@@ -5,10 +9,22 @@ import "./Navbar.css"
 const Navbar = () => {
     return (
         <nav>
-            <h3><a href="/">
+            <h3><Link to="/">
                 <img src={drop} alt="drop" />
                 Faucet
-            </a></h3>
+            </Link></h3>
+
+            <div className="links">
+                <Link to="/buckets">Your Buckets</Link>
+
+                <div>
+                    <ConnectButton
+                        label="Connect"
+                        accountStatus={"address"}
+                        chainStatus={"none"}
+                    />
+                </div>
+            </div>
         </nav>
     )
 }

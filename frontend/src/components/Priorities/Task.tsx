@@ -95,7 +95,7 @@ const Task = (props: Props) => {
                         aria-label={props.task.content}
                     >
                         <div>
-                            <FontAwesomeIcon icon={icon} style={{
+                            <FontAwesomeIcon icon={icon as any} style={{
                                 marginRight: "10px",
                                 width: "12px",
                             }} />

@@ -29,6 +29,8 @@ const Form = () => {
     const [referrerCollapsed, setReferrerCollapsed] = useState<boolean>(true);
     const [referrer, setReferrer] = useState<string>("");
 
+    const referrerIsEthereumAddress = referrer.length === 42 && referrer.startsWith("0x");
+
     const price = size > 5 ? size * 0.0005 : 0; // 0.0005 is the price per unit
 
     const onDragStart = (start: DragStart) => {
@@ -123,13 +125,22 @@ const Form = () => {
                         </span>
                     </label>
                     {!referrerCollapsed && (
-                        <input
-                            type="text"
-                            id="referrer"
-                            value={referrer}
-                            onChange={(e) => setReferrer(e.target.value)}
-                            placeholder="0x0000....0000"
-                        />
+                        <>
+                            <input
+                                type="text"
+                                id="referrer"
+                                value={referrer}
+                                onChange={(e) => setReferrer(e.target.value)}
+                                placeholder="0x0000....0000"
+                            />
+
+                            {/* // If the address provided is invalid, show an error message */}
+                            {referrer && !referrerIsEthereumAddress && (
+                                <span className="form__input__error">
+                                    <small>Please enter a valid referral code in the form of an Ethereum address.</small>
+                                </span>
+                            )}
+                        </>
                     )}
                 </FormControl>
             </div>

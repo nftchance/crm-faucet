@@ -1,8 +1,18 @@
-nav { 
+nav {
     margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
 
-nav img { 
+nav .links {
+    text-align: right;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    grid-gap: 20px;
+}
+
+nav img {
     height: 15px;
     width: 15px;
     margin-right: 10px;
