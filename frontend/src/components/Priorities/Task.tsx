@@ -81,6 +81,8 @@ const Task = (props: Props) => {
     return (
         <Draggable draggableId={props.task.id} index={props.index}>
             {(provided: DraggableProvided) => {
+                const icon = props.task.id === 'email' ? ['fas', 'envelope'] : ['fab', props.task.id as any];
+
                 return (
                     <Container
                         ref={provided.innerRef}
@@ -93,7 +95,7 @@ const Task = (props: Props) => {
                         aria-label={props.task.content}
                     >
                         <div>
-                            <FontAwesomeIcon icon={['fab', props.task.id as any]} style={{
+                            <FontAwesomeIcon icon={icon} style={{
                                 marginRight: "10px",
                                 width: "12px",
                             }} />

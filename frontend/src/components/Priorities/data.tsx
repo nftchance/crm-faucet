@@ -2,10 +2,6 @@ import type { Column, Entities, TaskMap, Task, Id } from './types';
 
 const tasks: Task[] = [
     {
-        id: 'reddit',
-        content: 'Reddit',
-    },
-    {
         id: 'twitter',
         content: 'Twitter',
     },
@@ -22,6 +18,9 @@ const tasks: Task[] = [
     }, { 
         id: 'github',
         content: 'Github',
+    }, { 
+        id: 'email',
+        content: 'Email',
     }
 ];        
 
