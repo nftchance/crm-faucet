@@ -1,0 +1,11 @@
+[
+  "constructor(string)",
+  "event OwnershipTransferred(address indexed,address indexed)",
+  "function baseURI() view returns (string)",
+  "function locked() view returns (bool)",
+  "function owner() view returns (address)",
+  "function renounceOwnership()",
+  "function setBaseURI(string,bool)",
+  "function tokenURI(uint256,bytes) view returns (string)",
+  "function transferOwnership(address)"
+]

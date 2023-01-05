@@ -1,26 +1,27 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const signerAddress = "TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODO"
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+  const Water = await hre.ethers.getContractFactory("Water");
+  const water = await Water.deploy("https://api.faucet.usecogs.xyz/");
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  await water.deployed();
 
-  await lock.deployed();
+  console.log("Water deployed to:", water.address);
 
-  console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+  const Faucet = await hre.ethers.getContractFactory("Faucet");
+  const faucet = await Faucet.deploy();
+
+  await faucet.deployed();
+
+  console.log("Faucet deployed to:", faucet.address);
+
+  // Set the water on the Faucet contract
+  await faucet.setWater(water.address);
+
+  // Set the signer on the Faucet contract
+  await faucet.setSigner(signerAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

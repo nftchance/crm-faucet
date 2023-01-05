@@ -63,6 +63,17 @@ p.form-summary-title {
 
 /* Change color of material UI select to white */
 
+input::placeholder,
+.MuiSelect-select::placeholder {
+    color: rgba(255, 255, 255, .65) !important;
+}
+
+input:hover::placeholder,
+.MuiSelect-select:hover::placeholder {
+    color: #FFFFFF !important;
+}
+
+input,
 .MuiSelect-select {
     color: rgba(255, 255, 255, .65) !important;
     background: rgba(255, 255, 255, .15) !important;
@@ -70,18 +81,26 @@ p.form-summary-title {
     padding: 5px 30px !important;
     border-radius: 9px !important;
     border: 1px solid transparent !important;
+    outline: none;
+    font-size: 16px;
+    font-weight: 500;
+    height: 24px;
 }
 
+input:hover,
 .MuiSelect-select:hover {
     color: #FFFFFF !important;
+    cursor: pointer;
 }
 
+input,
 .select .MuiOutlinedInput-notchedOutline {
     border-color: rgba(255, 255, 255, .3) !important;
     border-width: 1px !important;
     border-radius: 9px !important;
 }
 
+input:hover,
 .select:hover .MuiOutlinedInput-notchedOutline {
     border-color: rgba(255, 255, 255, 1) !important;
 }
@@ -112,4 +131,8 @@ p.form-summary-title {
 
 .MuiMenuItem-root {
     padding: 5px 30px !important;
+}
+
+label div { 
+    margin-left: 10px !important;
 }

@@ -111,20 +111,6 @@ h6 {
   line-height: 1.2;
 }
 
-input,
-select {
-  font-family: inherit;
-  width: 100%;
-  outline: none;
-  padding: 10px 30px;
-
-  background: rgba(255, 255, 255, .1);
-  backdrop-filter: blur(30px);
-  border-radius: 9px;
-  border: 1px solid rgba(255, 255, 255, .1);
-  color: rgba(255, 255, 255, .65);
-}
-
 footer {
   display: grid;
   grid-template-columns: 4fr 1fr 1fr;

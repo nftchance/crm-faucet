@@ -5,6 +5,8 @@ import { Droppable } from 'react-beautiful-dnd'
 
 import Task from './Task';
 
+import Tooltip from '../Tooltip/Tooltip';
+
 import type { DroppableProvided } from 'react-beautiful-dnd';
 import type { Column as ColumnType, Task as TaskType, Id } from './types';
 
@@ -12,6 +14,7 @@ interface Props {
     column: ColumnType;
     tasks: TaskType[];
     draggingTaskId: Id | null;
+    tooltip: string;
 }
 
 const Container = styled.div`
@@ -30,11 +33,12 @@ const TaskList = styled.div`
 `;
 
 const Priorities = (props: Props) => {
-    const { column, tasks } = props;
+    const { column, tasks, tooltip } = props;
 
     return (
         <Container>
-            <Title>{column.title}</Title>
+            <Title>{column.title}  <Tooltip text={tooltip} /></Title>
+
             <Droppable droppableId={column.id}>
                 {(provided: DroppableProvided) => (
                     <TaskList

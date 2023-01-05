@@ -2,11 +2,12 @@ import Navbar from "./components/Navbar/Navbar";
 import Form from "./components/Form/Form";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
 import './App.css'
 
-library.add(fab)
+library.add(fas, fab)
 
 function App() {
   return (

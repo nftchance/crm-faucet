@@ -1,10 +1,15 @@
 import { useState } from "react"
 
-import { Input, FormControl, Select, MenuItem, OutlinedInput } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { FormControl, Select, MenuItem } from "@mui/material";
 import { DragDropContext, DragStart, DraggableLocation, DropResult } from 'react-beautiful-dnd';
 
-import { mutliDragAwareReorder } from '../Priorities/utils';
+import Tooltip from "../Tooltip/Tooltip"
 
+import { tooltips } from "./data"
+
+import { mutliDragAwareReorder } from '../Priorities/utils';
 import { entities as initialEntities, sizes } from "../Priorities/data"
 import Priorities from "../Priorities/Priorities"
 
@@ -20,6 +25,9 @@ const Form = () => {
     const [size, setSize] = useState(sizes.Sample);
     const [entities, setEntities] = useState<Entities>(initialEntities);
     const [draggingTaskId, setDraggingTaskId] = useState<Id | null>(null);
+
+    const [referrerCollapsed, setReferrerCollapsed] = useState<boolean>(true);
+    const [referrer, setReferrer] = useState<string>("");
 
     const price = size > 5 ? size * 0.0005 : 0; // 0.0005 is the price per unit
 
@@ -54,7 +62,10 @@ const Form = () => {
         <div className="form">
             <div className="form__input">
                 <FormControl fullWidth>
-                    <label htmlFor="size">Size</label>
+                    <label htmlFor="size">
+                        Size
+                        <Tooltip text={tooltips.size} />
+                    </label>
                     <Select
                         value={size}
                         onChange={(e) => setSize(Number(e.target.value))}
@@ -87,10 +98,41 @@ const Form = () => {
                             column={column}
                             tasks={tasks}
                             draggingTaskId={draggingTaskId}
+                            tooltip={tooltips.priorities}
                         />
                     )
                 })}
             </DragDropContext>
+
+            <div className="form__input">
+                <FormControl fullWidth>
+                    <label htmlFor="referrer">
+                        Referral Code
+                        <Tooltip text={tooltips.referrer} />
+
+                        <span
+                            className="form__input__collapse"
+                            onClick={() => setReferrerCollapsed(!referrerCollapsed)}
+                            style={{ float: "right", cursor: "pointer" }}
+                        >
+                            {referrerCollapsed ? (
+                                <FontAwesomeIcon icon={['fas', 'plus']} />
+                            ) : (
+                                <FontAwesomeIcon icon={['fas', 'minus']} />
+                            )}
+                        </span>
+                    </label>
+                    {!referrerCollapsed && (
+                        <input
+                            type="text"
+                            id="referrer"
+                            value={referrer}
+                            onChange={(e) => setReferrer(e.target.value)}
+                            placeholder="0x0000....0000"
+                        />
+                    )}
+                </FormControl>
+            </div>
 
             <button className="primary">{price} <small>ETH</small> | Export Contacts</button>
         </div>
