@@ -1,6 +1,7 @@
-from rest_framework import routers
+from django.urls import path
 
 from . import views
 
-router = routers.DefaultRouter()
-router.register(r"spouts", views.SpoutViewSet)
+urlpatterns = [
+    path('spout/<int:pk>/', views.get_spout, name='get_spout'),
+]

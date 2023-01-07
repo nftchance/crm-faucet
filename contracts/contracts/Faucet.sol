@@ -20,10 +20,7 @@ contract Faucet is Spout {
         /// @dev Confirm the nft mint is not leaking.
         _leakProof(_body, _signature);
 
-        /// @dev Store the body.
-        bodies.push(_body);
-
         /// @dev Mint the NFT to the executing wallet.
-        _safeMint(msg.sender, bodies.length - 1, _body);
+        _safeMint(msg.sender, bodies.length - 1);
     }
 }

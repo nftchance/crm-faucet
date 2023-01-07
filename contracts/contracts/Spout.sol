@@ -25,6 +25,9 @@ contract Spout is ERC721, Aerator {
     /// @dev The number of units stored inside an NFT.
     bytes[] public bodies;
 
+    /// @dev Enables improved interface UX.
+    event Poured(uint256 indexed units, address indexed referrer, bytes indexed tail);
+
     /// @dev Initialize the ERC721.
     constructor() ERC721("Cogs Faucet", "CFCT") {}
 
@@ -83,5 +86,11 @@ contract Spout is ERC721, Aerator {
 
         /// @dev Ensure the caller has paid the price.
         require(!leaky, "Faucet: Insufficient payment");
+
+        /// @dev Store the body.
+        bodies.push(_body);
+
+        /// @dev Emit the poured event.
+        emit Poured(_units, _referrer, _tail);
     }
 }
