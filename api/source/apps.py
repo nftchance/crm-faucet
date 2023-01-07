@@ -8,7 +8,7 @@ class SourceConfig(AppConfig):
     name = "source"
 
     def ready(self):
-        if os.environ.get("RUN_MAIN") or not settings.DEBUG:
+        if os.environ.get("RUN_MAIN") and not settings.DEBUG:
             from .scripts import JobManager
 
             manager = JobManager()
