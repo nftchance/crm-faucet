@@ -29,6 +29,7 @@ task("deploy", "Deploys the protocol")
         const basePrice = "0.005"
         const freeLeads = 5
         const maxLeads = 5000
+        const signerAddress = "0x7696Dec4B53378B865B34C7ef237b2578bebc7CC"
         // TODO: CHANGE THESE SETTINGS
 
         await hre.run('compile');
@@ -79,6 +80,10 @@ task("deploy", "Deploys the protocol")
         tx = await faucet.setPricer(pricer.address);
         await tx.wait();
         console.log("✅ Faucet setPricer")
+
+        tx = await faucet.setSigner(signerAddress);
+        await tx.wait();
+        console.log("✅ Faucet setSigner")
 
         tx = await pricer.setBase(
             ethers.utils.parseEther(basePrice),
