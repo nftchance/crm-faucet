@@ -49,11 +49,6 @@ class SpoutViewSet(viewsets.ModelViewSet):
                 minutes=settings.MINUTES_TO_STALL
             ):
                 # Return the spout's status as building.
-                seconds_passed = (
-                    django.utils.timezone.now() - instance.built
-                ).total_seconds()
-                progress = int(100 * seconds_passed / (settings.MINUTES_TO_STALL * 60))
-
                 return self._return("building", instance) 
 
             # If all conditions have been met, return the spout.
