@@ -1,5 +1,6 @@
 database/
 venv/
+.env
 
 # Standard python .gitignore
 # Byte-compiled / optimized / DLL files

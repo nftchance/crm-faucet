@@ -82,8 +82,17 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Rest framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ],
 }
+
+ALCHEMY_KEY = os.getenv("ALCHEMY_KEY", "ALCHEMY_KEY")
+TESTNET_CONTRACT_ADDRESS = os.getenv("TESTNET_CONTRACT_ADDRESS", "TESTNET_CONTRACT_ADDRESS")
+MAINNET_CONTRACT_ADDRESS = os.getenv("MAINNET_CONTRACT_ADDRESS", "MAINNET_CONTRACT_ADDRESS")
+
+PROVIDER = "https://eth-mainnet.alchemyapi.io/v2/" if not DEBUG else "https://eth-ropsten.alchemyapi.io/v2/"
+CONTRACT_ADDRESS = MAINNET_CONTRACT_ADDRESS if not DEBUG else TESTNET_CONTRACT_ADDRESS
