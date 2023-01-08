@@ -5,11 +5,11 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 
+from django.conf import settings
+
 from .models import Spout
 from .serializers import SpoutSerializer
 from .utils import SMART_CONTRACT
-
-MINUTES_TO_STALL = 3
 
 class SpoutViewSet(viewsets.ModelViewSet):
     queryset = Spout.objects.all()
@@ -66,13 +66,13 @@ class SpoutViewSet(viewsets.ModelViewSet):
             # If the spout was built in the last 3 minutes, return building status.
             if (
                 instance.built
-                < django.utils.timezone.now() - datetime.timedelta(minutes=MINUTES_TO_STALL)
+                < django.utils.timezone.now() - datetime.timedelta(minutes=settings.MINUTES_TO_STALL)
             ):
                 # Return the spout's status as building.
                 seconds_passed = (
                     django.utils.timezone.now() - instance.built
                 ).total_seconds()
-                progress = int(100 * seconds_passed / (MINUTES_TO_STALL * 60))
+                progress = int(100 * seconds_passed / (settings.MINUTES_TO_STALL * 60))
 
                 return Response(
                     {
