@@ -7,11 +7,12 @@ from source.models import Source
 
 from .utils import get_poured_events
 
+
 class SpoutQuerySet(models.QuerySet):
     def accept_spouts(self):
         for spout in self.filter(looked__isnull=True, accepted__isnull=True):
             (events, latest) = get_poured_events(spout.token_id)
-            
+
             # Caching the spout lookup to prevent another RPC call and move on.
             if latest is None:
                 spout.looked = timezone.now()
@@ -21,19 +22,20 @@ class SpoutQuerySet(models.QuerySet):
 
             spout.accepted = timezone.now()
             spout.cached_body = json.dumps(latest)
-            
+
             spout.save()
 
     def fill_spouts(self):
         for spout in self.filter(accepted__isnull=False, built__isnull=True):
-            # Decode the cached body to determine the priorities.
+            # TODO: Decode the cached body to determine the priorities.
 
             spout.built = timezone.now()
             spout.save()
 
     def delete_old_looked_spouts(self, max_age=60 * 60):
-        self.filter(looked__lt=timezone.now() -
-                    timezone.timedelta(seconds=max_age)).delete()
+        self.filter(
+            looked__lt=timezone.now() - timezone.timedelta(seconds=max_age)
+        ).delete()
 
 
 class SpoutManager(models.Manager):
@@ -54,9 +56,7 @@ class Spout(models.Model):
     referrer = models.CharField(max_length=255, blank=True, null=True)
     tail = models.CharField(max_length=255, blank=True, null=True)
 
-    sources = models.ManyToManyField(
-        Source, related_name="spouts", blank=True
-    )
+    sources = models.ManyToManyField(Source, related_name="spouts", blank=True)
 
     cache_body = models.TextField(blank=True, null=True)
 

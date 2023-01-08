@@ -84,7 +84,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 5,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAdminUser',
     ],
@@ -96,5 +96,5 @@ ALCHEMY_KEY = os.getenv("ALCHEMY_KEY", "ALCHEMY_KEY")
 TESTNET_CONTRACT_ADDRESS = os.getenv("TESTNET_CONTRACT_ADDRESS", "TESTNET_CONTRACT_ADDRESS")
 MAINNET_CONTRACT_ADDRESS = os.getenv("MAINNET_CONTRACT_ADDRESS", "MAINNET_CONTRACT_ADDRESS")
 
-PROVIDER = f"https://eth-mainnet.alchemyapi.io/v2/{ALCHEMY_KEY}" if not DEBUG else "https://sepolia.infura.io/v3/"
+PROVIDER = f"https://eth-mainnet.alchemyapi.io/v2/{ALCHEMY_KEY}" if not DEBUG else "https://rpc.sepolia.org"
 CONTRACT_ADDRESS = MAINNET_CONTRACT_ADDRESS if not DEBUG else TESTNET_CONTRACT_ADDRESS
