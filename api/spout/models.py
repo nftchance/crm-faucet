@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.utils import timezone
 
@@ -11,20 +13,14 @@ class SpoutQuerySet(models.QuerySet):
             (events, latest) = get_poured_events(spout.token_id)
             
             # Caching the spout lookup to prevent another RPC call and move on.
-            if not events:
+            if latest is None:
                 spout.looked = timezone.now()
                 spout.save()
 
                 continue
 
-            units = latest["args"]["units"]
-            referrer = latest["args"]["referrer"]
-            tail = latest["args"]["tail"]
-
-            print(units, referrer, tail)
-
             spout.accepted = timezone.now()
-            spout.cached_body = str(latest)
+            spout.cached_body = json.dumps(latest)
             
             spout.save()
 

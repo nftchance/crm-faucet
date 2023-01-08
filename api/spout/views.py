@@ -20,7 +20,6 @@ class SpoutViewSet(viewsets.ModelViewSet):
         return []
 
     def retrieve(self, request, pk=None):
-        # if the instance exists and finished building more than 3 minutes ago.
         if Spout.objects.filter(pk=pk).exists():
             instance = Spout.objects.get(pk=pk)
 
