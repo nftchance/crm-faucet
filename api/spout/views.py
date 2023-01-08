@@ -9,7 +9,6 @@ from django.conf import settings
 
 from .models import Spout
 from .serializers import SpoutSerializer
-from .utils import SMART_CONTRACT
 
 class SpoutViewSet(viewsets.ModelViewSet):
     queryset = Spout.objects.all()
@@ -21,15 +20,6 @@ class SpoutViewSet(viewsets.ModelViewSet):
         return []
 
     def retrieve(self, request, pk=None):
-        if SMART_CONTRACT is None:
-            return Response(
-                {
-                    "status": "error",
-                    "message": "Contract not found.",
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
         # if the instance exists and finished building more than 3 minutes ago.
         if Spout.objects.filter(pk=pk).exists():
             instance = Spout.objects.get(pk=pk)
