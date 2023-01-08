@@ -19,8 +19,11 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 task("deploy", "Deploys the protocol")
-    .addFlag("verify", "Verify the deployed contracts on Etherscan")
+    .addOptionalParam("verify", "Verify the deployed contracts on Etherscan", false, types.boolean)
     .setAction(async (taskArgs, hre) => {
+        const willVerify = taskArgs.verify !== false
+        console.log(`Will verify`, willVerify)
+
         // TODO: CHANGE THESE SETTINGS
         const baseURI = "baseURI/unset"
         const basePrice = "0.005"
@@ -87,7 +90,6 @@ task("deploy", "Deploys the protocol")
 
         // Verifying
         if (taskArgs.verify !== false && chainId != '31337') {
-
             // Give time for etherscan to confirm the contract before verifying.
             await new Promise(r => setTimeout(r, 30000));
             await hre.run("verify:verify", {
@@ -143,8 +145,8 @@ module.exports = {
         },
         ci: {
             tasks: [
-                "clean", 
-                { command: "compile", params: { quiet: true } }, 
+                "clean",
+                { command: "compile", params: { quiet: true } },
                 { command: "test", params: { noCompile: true, testFiles: ["testfile.ts"] } }
             ],
         }
