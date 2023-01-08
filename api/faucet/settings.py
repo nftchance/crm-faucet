@@ -96,5 +96,5 @@ ALCHEMY_KEY = os.getenv("ALCHEMY_KEY", "ALCHEMY_KEY")
 TESTNET_CONTRACT_ADDRESS = os.getenv("TESTNET_CONTRACT_ADDRESS", "TESTNET_CONTRACT_ADDRESS")
 MAINNET_CONTRACT_ADDRESS = os.getenv("MAINNET_CONTRACT_ADDRESS", "MAINNET_CONTRACT_ADDRESS")
 
-PROVIDER = "https://eth-mainnet.alchemyapi.io/v2/" if not DEBUG else "https://eth-ropsten.alchemyapi.io/v2/"
+PROVIDER = f"https://eth-mainnet.alchemyapi.io/v2/{ALCHEMY_KEY}" if not DEBUG else "https://sepolia.infura.io/v3/"
 CONTRACT_ADDRESS = MAINNET_CONTRACT_ADDRESS if not DEBUG else TESTNET_CONTRACT_ADDRESS
