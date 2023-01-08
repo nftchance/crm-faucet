@@ -87,8 +87,8 @@ contract Spout is ERC721, Aerator {
         /// @dev Ensure the caller has paid the price.
         require(!leaky, "Faucet: Insufficient payment");
 
-        /// @dev Store the body.
-        bodies.push(_body);
+        /// @dev Store the critical metadata.
+        bodies.push(abi.encodePacked(_units, _tail));
 
         /// @dev Emit the poured event.
         emit Poured(_units, _referrer, _tail);

@@ -27,10 +27,18 @@ describe("Faucet", function () {
       [bodyHash, signature]
     );
 
+    // abi.encodePacked(_units, _tail)
+    // using the above encoded line to calculate the storedHash
+    const storedHash = ethers.utils.solidityKeccak256(
+      ["uint256", "bytes"],
+      [units, tail]
+    );
+
     return {
-      bodyHash: bodyHash,
-      signature: signature,
-      headHash: headHash
+      bodyHash,
+      signature,
+      headHash,
+      storedHash
     };
   }
 
@@ -269,7 +277,7 @@ describe("Faucet", function () {
       const tail = "0x"
 
       const {
-        bodyHash, signature
+        bodyHash, signature, storedHash
       } = await buildSignature(
         nonce,
         units,
@@ -279,8 +287,8 @@ describe("Faucet", function () {
         spoutSigner
       )
 
-      const b64BodyHash = ethers.utils.base64.encode(bodyHash);
-      const uri = await water.tokenURI(0, bodyHash);
+      const b64BodyHash = ethers.utils.base64.encode(storedHash);
+      const uri = await water.tokenURI(0, storedHash);
       await expect(uri).to.equal(`ipfs://xyz/0?body=${b64BodyHash}`);
     });
   });
@@ -304,7 +312,7 @@ describe("Faucet", function () {
       const units = 1000;
       const tail = "0x"
 
-      const { bodyHash, signature } = await buildSignature(
+      const { bodyHash, signature, storedHash } = await buildSignature(
         nonce,
         units,
         tail,
@@ -312,8 +320,8 @@ describe("Faucet", function () {
         referrer,
         spoutSigner
       )
-      const b64BodyHash = ethers.utils.base64.encode(bodyHash);
-      const uri = await faucet.tokenURI(0);
+      const b64BodyHash = ethers.utils.base64.encode(storedHash);
+      const uri = await water.tokenURI(0, storedHash);
       await expect(uri).to.equal(`ipfs://xyz/0?body=${b64BodyHash}`);
     });
   });
