@@ -57,7 +57,7 @@ task("deploy", "Deploys the protocol")
             "Remaining ETH Balance": parseInt((await deployer.getBalance()).toString()) / 1000000000000000000,
         }
         console.table(waterDeployment)
-        
+
         const Pricer = await ethers.getContractFactory("Pricer");
         pricer = await Pricer.deploy();
         pricer = await pricer.deployed();
@@ -111,7 +111,7 @@ task("deploy", "Deploys the protocol")
             console.log("✅ Pricer Verified.")
         }
     }
-  );
+    );
 
 
 module.exports = {
@@ -142,26 +142,24 @@ module.exports = {
             verbose: true,
         },
         ci: {
-            tasks: ["clean", { command: "compile", params: { quiet: true } }, { command: "test", params: { noCompile: true, testFiles: ["testfile.ts"] } }],
+            tasks: [
+                "clean", 
+                { command: "compile", params: { quiet: true } }, 
+                { command: "test", params: { noCompile: true, testFiles: ["testfile.ts"] } }
+            ],
         }
     },
     abiExporter: {
         path: 'abis/',
         runOnCompile: true,
         clear: true,
-        flat: true,
-        spacing: 2,
+        spacing: 4,
         format: "minimal"
     },
     etherscan: {
         apiKey: {
+            sepolia: process.env.ETHERSCAN_API_KEY,
             mainnet: process.env.ETHERSCAN_API_KEY,
-            rinkeby: process.env.ETHERSCAN_API_KEY,
-            goerli: process.env.ETHERSCAN_API_KEY,
-            kovan: process.env.ETHERSCAN_API_KEY,
-            ropsten: process.env.ETHERSCAN_API_KEY,
-            mumbai: process.env.POLYGONSCAN_API_KEY,
-            matic: process.env.POLYGONSCAN_API_KEY,
         }
     },
     defaultNetwork: "hardhat",
@@ -177,26 +175,15 @@ module.exports = {
                 interval: 1500,
             }
         },
-        // goerli: {
-        //     url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ETH_ALCHEMY_KEY}`,
-        //     accounts: [`0x${process.env.ETHEREUM_PRIVATE_KEY}`],
-        //     gasPrice: 5000000000, // 5 gwei
-        // },
-        // mumbai: {
-        //     url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.POLYGON_ALCHEMY_KEY}`,
-        //     accounts: [`0x${process.env.POLYGON_PRIVATE_KEY}`],
-        //     gas: 3000000,
-        //     gasPrice: 100000000000 // 100 gwei
-        // },
-        // mainnet: {
-        //     url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ETH_ALCHEMY_KEY}`,
-        //     accounts: [`0x${process.env.ETHEREUM_PRIVATE_KEY}`],
-        //     gasPrice: 50000000000, // 50 gwei
-        // },
-        // polygon: {
-        //     url: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.POLYGON_ALCHEMY_KEY}`,
-        //     accounts: [`0x${process.env.POLYGON_PRIVATE_KEY}`],
-        //     gasPrice: 'auto'
-        // },
+        sepolia: {
+            url: `https://rpc.sepolia.org/`,
+            accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY}`],
+            gasPrice: 50000000000, // 50 gwei
+        },
+        mainnet: {
+            url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+            accounts: [`0x${process.env.ETHEREUM_PRIVATE_KEY}`],
+            gasPrice: 50000000000, // 50 gwei
+        },
     }
 };

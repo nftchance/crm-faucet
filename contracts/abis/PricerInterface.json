@@ -1,4 +1,0 @@
-[
-  "function locked() view returns (bool)",
-  "function price(uint256,address,bytes,uint256) view returns (uint256)"
-]

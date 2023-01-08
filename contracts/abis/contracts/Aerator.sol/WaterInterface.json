@@ -1,0 +1,4 @@
+[
+    "function locked() view returns (bool)",
+    "function tokenURI(uint256,bytes) view returns (string)"
+]

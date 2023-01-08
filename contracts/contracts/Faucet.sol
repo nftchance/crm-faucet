@@ -16,7 +16,10 @@ contract Faucet is Spout {
      * @param _body The signed ornament to drip.
      * @param _signature The signature of the ornament.
      */
-    function drip(bytes calldata _body, bytes calldata _signature) external payable {
+    function drip(bytes calldata _body, bytes calldata _signature)
+        external
+        payable
+    {
         /// @dev Confirm the nft mint is not leaking.
         _leakProof(_body, _signature);
 
