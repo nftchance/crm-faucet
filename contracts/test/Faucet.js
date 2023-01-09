@@ -146,8 +146,7 @@ describe("Faucet", function () {
           signer1.address,
           1000,
           referrer.address,
-          "0x",
-          0
+          "0x"
         ])
       ]
 

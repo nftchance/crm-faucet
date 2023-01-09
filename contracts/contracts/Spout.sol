@@ -55,6 +55,24 @@ contract Spout is ERC721, Aerator {
         return water.tokenURI(_tokenId, bodies[_tokenId]);
     }
 
+   /**
+     * @dev Calculates the price for a configured purchase.
+     * @param buyer The address of the buyer.
+     * @param _units The number of units to purchase.
+     * @param _referrer The address of the referrer.
+     * @param _tail The tail data.
+     * @return The price of the purchase.
+     */
+    function price(
+        address buyer,
+        uint256 _units,
+        address _referrer,
+        bytes calldata _tail
+    ) external view returns (uint256) {
+        return
+            pricer.price(buyer, _units, _referrer, _tail, balanceOf(_referrer));
+    }
+
     ////////////////////////////////////////////////////
     ///               INTERNAL SETTERS               ///
     ////////////////////////////////////////////////////

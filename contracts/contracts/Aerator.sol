@@ -104,25 +104,6 @@ contract Aerator is Ownable {
     ////////////////////////////////////////////////////
 
     /**
-     * @dev Calculates the price for a configured purchase.
-     * @param buyer The address of the buyer.
-     * @param _units The number of units to purchase.
-     * @param _referrer The address of the referrer.
-     * @param _tail The tail data.
-     * @param _referrerBalance The referrer's balance.
-     * @return The price of the purchase.
-     */
-    function price(
-        address buyer,
-        uint256 _units,
-        address _referrer,
-        bytes calldata _tail,
-        uint256 _referrerBalance
-    ) external view returns (uint256) {
-        return pricer.price(buyer, _units, _referrer, _tail, _referrerBalance);
-    }
-
-    /**
      * @dev Call multiple functions at once.
      * @notice This function is not payable because it is intended as a multi-read function.
      * @param _data The data to call.

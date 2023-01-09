@@ -346,11 +346,6 @@
                 "internalType": "bytes",
                 "name": "_tail",
                 "type": "bytes"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_referrerBalance",
-                "type": "uint256"
             }
         ],
         "name": "price",
