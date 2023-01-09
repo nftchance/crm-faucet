@@ -21,7 +21,7 @@ const Navbar = () => {
                     <ConnectButton
                         label="Connect"
                         accountStatus={"address"}
-                        chainStatus={"none"}
+                        chainStatus={"icon"}
                     />
                 </div>
             </div>

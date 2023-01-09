@@ -10,15 +10,14 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
+import { mainnet, sepolia } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 import './index.css'
 
-
 const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum],
+  [mainnet, sepolia],
   [
     alchemyProvider({ apiKey: 'WyBFuEnjTohf0DtDBV1araDXubDTXAJL' }),
     publicProvider()
@@ -26,7 +25,7 @@ const { chains, provider } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'My RainbowKit App',
+  appName: 'Faucet',
   chains
 });
 
@@ -38,7 +37,7 @@ const wagmiClient = createClient({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains}>
+    <RainbowKitProvider chains={chains} initialChain={sepolia}>
       <Router>
         <App />
       </Router>

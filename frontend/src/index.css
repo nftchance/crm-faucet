@@ -75,6 +75,11 @@ button.primary {
   color: #000000;
 }
 
+button.primary:disabled {
+  background: #b3b3b3;
+  color: #000000;
+}
+
 button.cta:hover {
   background: rgb(16, 16, 210);
   color: #fff;
