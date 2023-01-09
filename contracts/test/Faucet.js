@@ -129,6 +129,7 @@ describe("Faucet", function () {
       const units = 6000;
       const tail = "0x"
       const price = await expect(pricer.price(
+        signer1.address,
         units,
         referrer.address,
         "0x",
@@ -143,6 +144,7 @@ describe("Faucet", function () {
       const units = 1000;
       const tail = "0x"
       const price = await pricer.price(
+        signer1.address,
         units,
         referrer.address,
         "0x",
@@ -174,6 +176,7 @@ describe("Faucet", function () {
       const units = 1000;
       const tail = "0x";
       const price = await pricer.price(
+        signer1.address,
         units,
         referrer.address,
         "0x",
@@ -224,6 +227,7 @@ describe("Faucet", function () {
       const units = 500;
       const tail = "0x"
       const price = await pricer.price(
+        signer1.address,
         units,
         referrer.address,
         "0x",
