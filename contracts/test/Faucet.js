@@ -21,7 +21,7 @@ describe("Faucet", function () {
     const signature = await faucetSigner.signMessage(
       ethers.utils.arrayify(signatureHash)
     );
- 
+
     const headHash = ethers.utils.defaultAbiCoder.encode(
       ["bytes", "bytes"],
       [bodyHash, signature]
@@ -100,7 +100,7 @@ describe("Faucet", function () {
           5,
           5000,
           true
-      )).to.be.revertedWith("Ownable: caller is not the owner");
+        )).to.be.revertedWith("Ownable: caller is not the owner");
     });
 
     it("setBase() success", async function () {
@@ -139,6 +139,21 @@ describe("Faucet", function () {
   })
 
   describe("Faucet: Faucet.sol", function () {
+    it("multicall() success", async function () {
+      const multicalls = [
+        faucet.interface.encodeFunctionData("nonces", [signer1.address]),
+        faucet.interface.encodeFunctionData("price", [
+          signer1.address,
+          1000,
+          referrer.address,
+          "0x",
+          0
+        ])
+      ]
+
+      await faucet.multicall(multicalls);
+    });
+
     it("drip() success", async function () {
       const nonce = 1;
       const units = 1000;
@@ -218,7 +233,7 @@ describe("Faucet", function () {
 
       await expect(faucet.connect(signer1).drip(
         bodyHash, signature,
-        {value: ethers.utils.parseEther("0.0001")}
+        { value: ethers.utils.parseEther("0.0001") }
       )).to.be.revertedWith("Faucet: Insufficient payment");
     });
 
@@ -247,7 +262,7 @@ describe("Faucet", function () {
         faucet.connect(signer1).drip(
           bodyHash, signature,
           { value: price }
-      )).to.be.revertedWith("Faucet: Invalid signature");
+        )).to.be.revertedWith("Faucet: Invalid signature");
     });
   });
 
@@ -301,7 +316,7 @@ describe("Faucet", function () {
     it("tokenURI() fail: Water not set", async function () {
       const tx = await faucet.setWater(ethers.constants.AddressZero);
       const receipt = await tx.wait();
-      
+
       await expect(faucet.tokenURI(0)).to.be.revertedWith("Spout: Water not set");
       const tx2 = await faucet.setWater(water.address);
       const receipt2 = await tx2.wait();

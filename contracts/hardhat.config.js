@@ -21,9 +21,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 task("deploy", "Deploys the protocol")
     .addOptionalParam("verify", "Verify the deployed contracts on Etherscan", false, types.boolean)
     .setAction(async (taskArgs, hre) => {
-        const willVerify = taskArgs.verify !== false
-        console.log(`Will verify`, willVerify)
-
         // TODO: CHANGE THESE SETTINGS
         const baseURI = "baseURI/unset"
         const basePrice = "0.005"
@@ -73,17 +70,16 @@ task("deploy", "Deploys the protocol")
         }
         console.table(pricerDeployment)
 
-        let tx = await faucet.setWater(water.address);
-        await tx.wait();
-        console.log("✅ Faucet setWater")
+        // replace the above 3 transactions with a single multi-call
+        const multicalls = [
+            faucet.interface.encodeFunctionData("setWater", [water.address]),
+            faucet.interface.encodeFunctionData("setPricer", [pricer.address]),
+            faucet.interface.encodeFunctionData("setSigner", [signerAddress]),
+        ]
 
-        tx = await faucet.setPricer(pricer.address);
-        await tx.wait();
-        console.log("✅ Faucet setPricer")
-
-        tx = await faucet.setSigner(signerAddress);
-        await tx.wait();
-        console.log("✅ Faucet setSigner")
+        tx = await faucet.multicall(multicalls)
+        await tx.wait()
+        console.log("✅ Faucet configuration multicall.")
 
         tx = await pricer.setBase(
             ethers.utils.parseEther(basePrice),
