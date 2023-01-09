@@ -28,6 +28,10 @@ contract Water is Ownable {
         baseURI = _baseURI;
     }
 
+    ////////////////////////////////////////////////////
+    ///                   SETTERS                    ///
+    ////////////////////////////////////////////////////
+
     /**
      * @dev Allows the owner of the Faucet to update the metadata engine and lock it if desired.
      * @param _baseURI The new base URI for the metadata engine.
@@ -46,6 +50,10 @@ contract Water is Ownable {
         /// @dev Lock the contract if desired.
         if (_locked) locked = true;
     }
+
+    ////////////////////////////////////////////////////
+    ///                   GETTERS                    ///
+    ////////////////////////////////////////////////////
 
     /**
      * @dev Returns the metadata URI for a given token ID.

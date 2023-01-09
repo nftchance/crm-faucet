@@ -11,6 +11,10 @@ import {Spout} from "./Spout.sol";
  * @author Cogs: https://usecogs.xyz // nftchance* & masonthechain+
  */
 contract Faucet is Spout {
+    ////////////////////////////////////////////////////
+    ///                   MINTERS                    ///
+    ////////////////////////////////////////////////////
+
     /**
      * @dev Drip an NFT and the relevant number of units into the owning wallet.
      * @param _body The signed ornament to drip.

@@ -22,6 +22,10 @@ contract Pricer is Ownable {
 
     /// @dev Whether or not the contract has been locked.
     bool public locked = false;
+    
+    ////////////////////////////////////////////////////
+    ///                   SETTERS                    ///
+    ////////////////////////////////////////////////////
 
     /**
      * @dev Allows the owner of the Faucet to update the pricing engine and lock it if desired.
@@ -45,6 +49,10 @@ contract Pricer is Ownable {
         if (_locked) locked = true;
     }
 
+    ////////////////////////////////////////////////////
+    ///                   GETTERS                    ///
+    ////////////////////////////////////////////////////
+
     /**
      * @dev Allows the owner of the Faucet to update the pricing engine and lock it if desired.
      * @param _units Whether or not to lock the contract.
@@ -52,6 +60,7 @@ contract Pricer is Ownable {
      * @return The price.
      */
     function price(
+        address,
         uint256 _units,
         address,
         bytes calldata,

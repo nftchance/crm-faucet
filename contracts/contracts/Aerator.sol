@@ -17,15 +17,18 @@ interface WaterInterface {
         returns (string memory);
 }
 
-interface PricerInterface { 
+interface PricerInterface {
     /// @dev Returns whether or not the contract has been locked.
     function locked() external view returns (bool);
 
     /// @dev Calculate the price of the purchase given the current pricing module.
-    function price(uint256 _units, address _referrer, bytes calldata _tail, uint256 _referrerBalance)
-        external
-        view
-        returns (uint256);
+    function price(
+        address buyer,
+        uint256 _units,
+        address _referrer,
+        bytes calldata _tail,
+        uint256 _referrerBalance
+    ) external view returns (uint256);
 }
 
 /**
@@ -43,6 +46,13 @@ contract Aerator is Ownable {
     /// @dev The address of the signer.
     address public signer;
 
+    /// @dev The number of times an ornament signature has been used.
+    mapping(address => uint256) public nonces;
+
+    ////////////////////////////////////////////////////
+    ///                   SETTERS                    ///
+    ////////////////////////////////////////////////////
+
     /**
      * @dev Allows the owner to set the signer address.
      * @param _signer The address of the signer.
@@ -53,7 +63,7 @@ contract Aerator is Ownable {
 
     /**
      * @dev Allows the owner to set the Water contract.
-     * @param _water The address of the Water contract. 
+     * @param _water The address of the Water contract.
      */
     function setWater(address _water) external onlyOwner {
         /// @dev Ensure the water contract has not been locked.
@@ -68,7 +78,7 @@ contract Aerator is Ownable {
 
     /**
      * @dev Allows the owner to set the Pricer contract.
-     * @param _pricer The address of the Pricer contract. 
+     * @param _pricer The address of the Pricer contract.
      */
     function setPricer(address _pricer) external onlyOwner {
         /// @dev Ensure the pricer contract has not been locked.
@@ -87,5 +97,62 @@ contract Aerator is Ownable {
     function drain() external onlyOwner {
         /// @dev Send all funds to the owner.
         payable(msg.sender).transfer(address(this).balance);
+    }
+
+    ////////////////////////////////////////////////////
+    ///                   GETTERS                    ///
+    ////////////////////////////////////////////////////
+
+    /**
+     * @dev Calculates the price for a configured purchase.
+     * @param buyer The address of the buyer.
+     * @param _units The number of units to purchase.
+     * @param _referrer The address of the referrer.
+     * @param _tail The tail data.
+     * @param _referrerBalance The referrer's balance.
+     * @return The price of the purchase.
+     */
+    function price(
+        address buyer,
+        uint256 _units,
+        address _referrer,
+        bytes calldata _tail,
+        uint256 _referrerBalance
+    ) external view returns (uint256) {
+        return pricer.price(buyer, _units, _referrer, _tail, _referrerBalance);
+    }
+
+    /**
+     * @dev Call multiple functions at once.
+     * @notice This function is not payable because it is intended as a multi-read function.
+     * @param _data The data to call.
+     * @return results The results of the calls.
+     */
+    function multicall(bytes[] calldata _data)
+        external
+        virtual
+        returns (bytes[] memory results)
+    {
+        results = new bytes[](_data.length);
+        for (uint256 i; i < _data.length; i++) {
+            results[i] = _selfCall(_data[i]);
+        }
+    }
+
+    /**
+     * @dev Call a function on this contract.
+     * @param _data The data to call.
+     * @return result The result of the call.
+     */
+    function _selfCall(bytes memory _data) internal returns (bytes memory) {
+        (bool success, bytes memory result) = address(this).delegatecall(_data);
+        if (!success) {
+            if (result.length < 68) revert("");
+            assembly {
+                result := add(result, 0x04)
+            }
+            revert(abi.decode(result, (string)));
+        }
+        return result;
     }
 }

@@ -19,17 +19,22 @@ import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 contract Spout is ERC721, Aerator {
     using ECDSA for bytes32;
 
-    /// @dev The number of times an ornament signature has been used.
-    mapping(address => uint256) public nonces;
-
     /// @dev The number of units stored inside an NFT.
     bytes[] public bodies;
 
     /// @dev Enables improved interface UX.
-    event Poured(uint256 indexed units, address indexed referrer, bytes indexed tail);
+    event Poured(
+        uint256 indexed units,
+        address indexed referrer,
+        bytes indexed tail
+    );
 
     /// @dev Initialize the ERC721.
     constructor() ERC721("Cogs Faucet", "CFCT") {}
+
+    ////////////////////////////////////////////////////
+    ///                   GETTERS                    ///
+    ////////////////////////////////////////////////////
 
     /**
      * See {IERC721Metadata-tokenURI}.
@@ -49,6 +54,10 @@ contract Spout is ERC721, Aerator {
         /// @dev Build the metadata string and return it.
         return water.tokenURI(_tokenId, bodies[_tokenId]);
     }
+
+    ////////////////////////////////////////////////////
+    ///               INTERNAL SETTERS               ///
+    ////////////////////////////////////////////////////
 
     /**
      * @dev Leak proof the body of the ornament.
@@ -79,10 +88,16 @@ contract Spout is ERC721, Aerator {
             _hash.toEthSignedMessageHash().recover(_signature) == signer,
             "Faucet: Invalid signature"
         );
-        
+
         /// @dev Ensure the caller has paid the price of the plumber.
         bool leaky = msg.value <
-            pricer.price(_units, _referrer, _tail, balanceOf(_referrer));
+            pricer.price(
+                msg.sender,
+                _units,
+                _referrer,
+                _tail,
+                balanceOf(_referrer)
+            );
 
         /// @dev Ensure the caller has paid the price.
         require(!leaky, "Faucet: Insufficient payment");

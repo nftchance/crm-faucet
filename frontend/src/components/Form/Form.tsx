@@ -7,7 +7,7 @@ import { FormControl, Select, MenuItem } from "@mui/material";
 import { DragDropContext, DragStart, DraggableLocation, DropResult } from 'react-beautiful-dnd';
 
 import { ethers } from "ethers";
-import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { useAccount, usePrepareContractWrite, useContractWrite, useContractRead } from 'wagmi'
 
 import Priorities from "../Priorities/Priorities"
 import { mutliDragAwareReorder } from '../Priorities/utils';
@@ -20,6 +20,46 @@ import type { Task, Id, Entities } from '../Priorities/types';
 import type { Result as ReorderResult } from '../Priorities/utils';
 
 import "./Form.css"
+
+const DRIP_ABI = [
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "_body",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_signature",
+                "type": "bytes"
+            }
+        ],
+        "name": "drip",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType":"address",
+                "name":"",
+                "type":"address"
+            }
+        ],
+        "name":"nonces",
+        "outputs": [
+            {
+                "internalType":"uint256",
+                "name":"",
+                "type":"uint256"
+            }
+        ],
+        "stateMutability":"view",
+        "type":"function"
+    }
+]
 
 const getTasks = (entities: Entities, columnId: Id): Task[] =>
     entities.columns[columnId].taskIds.map((taskId: Id): Task => entities.tasks[taskId]);
@@ -68,34 +108,38 @@ const Form = () => {
     // TODO: Read price from the contract
     // TODO: Figure out how to get value working
     // TODO: Build the tail
+    // TODO: Right now when you change accounts, it's borked
+
+    const faucetContract = {
+        address: '0x711Ce9ea77B7f3B7A2718066133DC3C1888F4Bbe',
+        abi: DRIP_ABI,
+    }
+
+    const { data: priceRead, isLoading: isLoadingPrice, isError: isErrorPrice } = useContractRead({
+        ...faucetContract,
+        functionName: 'getPrice',
+        enabled: isConnected,
+        args: [
+            address,
+            size,
+            referrer ? referrer : address,
+            tail
+        ]
+    })
+
+    const { data: nonceRead, isLoading: isLoadingNonce, isError: isErrorNonce } = useContractRead({
+        ...faucetContract,
+        functionName: 'nonces',
+        enabled: isConnected,
+        args: [address]
+    })
+
+    console.log('Contract read data', priceRead, parseInt(nonceRead))
 
     const { config } = usePrepareContractWrite({
-        address: '0x711Ce9ea77B7f3B7A2718066133DC3C1888F4Bbe',
-        abi: [
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes",
-                        "name": "_body",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "_signature",
-                        "type": "bytes"
-                    }
-                ],
-                "name": "drip",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            }
-        ],
+        ...faucetContract,
         functionName: 'drip',
-        args: [
-            bodyHash as any,
-            signature as any
-        ],
+        args: [bodyHash, signature],
         enabled: isConnected && signature != "",
         overrides: {
             value: ethers.utils.parseEther(price.toString())
@@ -128,6 +172,14 @@ const Form = () => {
         setEntities(processed.entities);
         setDraggingTaskId(null);
     };
+
+    const onExport = async () => {
+        if (!write) return;
+        const tx = write()
+        console.log('tx', tx)
+        const receipt = await tx?.wait()
+        console.log('Receipt:', receipt)
+    }
 
     useEffect(() => {
         const onFormStateChange = () => {

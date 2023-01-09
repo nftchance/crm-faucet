@@ -161,7 +161,7 @@ module.exports = {
         runOnCompile: true,
         clear: true,
         spacing: 4,
-        format: "minimal"
+        format: "json"
     },
     etherscan: {
         apiKey: {
