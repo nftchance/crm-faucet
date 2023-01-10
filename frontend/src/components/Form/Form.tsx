@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import { useDebounce } from 'use-debounce'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +7,14 @@ import { FormControl, Select, MenuItem } from "@mui/material";
 import { DragDropContext, DragStart, DraggableLocation, DropResult } from 'react-beautiful-dnd';
 
 import { ethers } from "ethers";
-import { useAccount, usePrepareContractWrite, useContractWrite, useContractRead } from 'wagmi'
+import {
+    useAccount,
+    useProvider,
+    usePrepareContractWrite,
+    useContractWrite,
+    useContractRead,
+    useWaitForTransaction
+} from 'wagmi'
 
 import Priorities from "../Priorities/Priorities"
 import { mutliDragAwareReorder } from '../Priorities/utils';
@@ -16,56 +23,109 @@ import { entities as initialEntities, sizes } from "../Priorities/data"
 import Tooltip from "../Tooltip/Tooltip"
 import { tooltips } from "./data"
 
+import { FAUCET_ABI } from "../../abi/Faucet";
+
 import type { Task, Id, Entities } from '../Priorities/types';
 import type { Result as ReorderResult } from '../Priorities/utils';
 
+import {
+    Multicall,
+    ContractCallResults,
+    ContractCallContext,
+} from 'ethereum-multicall';
+
 import "./Form.css"
 
-const DRIP_ABI = [
-    {
-        "inputs": [
-            {
-                "internalType": "bytes",
-                "name": "_body",
-                "type": "bytes"
-            },
-            {
-                "internalType": "bytes",
-                "name": "_signature",
-                "type": "bytes"
-            }
-        ],
-        "name": "drip",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType":"address",
-                "name":"",
-                "type":"address"
-            }
-        ],
-        "name":"nonces",
-        "outputs": [
-            {
-                "internalType":"uint256",
-                "name":"",
-                "type":"uint256"
-            }
-        ],
-        "stateMutability":"view",
-        "type":"function"
+interface BodyHashProps {
+    isConnected: boolean;
+    nonce: number;
+    size: number;
+    referrer: string | undefined;
+    tail: string;
+}
+
+interface SignatureProps {
+    caller: `0x${string}` | undefined;
+    nonce: number;
+    size: number;
+    referrer: string | undefined;
+    tail: string;
+}
+
+interface MultiCallProps {
+    caller: `0x${string}` | undefined;
+    size: number;
+    referrer: string | undefined;
+    tail: string;
+}
+
+interface TransactionArgs {
+    args: string[],
+    overrides: {
+        value: ethers.BigNumber;
     }
-]
+}
+
+const FAUCET_CONTRACT = {
+    address: '0x4b759EC94AF514bb846aC3D4Dd1934e8E2Bc73C6',
+    abi: FAUCET_ABI,
+}
+
+const FAUCET_INTERFACE = new ethers.utils.Interface(FAUCET_CONTRACT.abi)
 
 const getTasks = (entities: Entities, columnId: Id): Task[] =>
     entities.columns[columnId].taskIds.map((taskId: Id): Task => entities.tasks[taskId]);
 
+const getBodyHash = ({ isConnected, nonce, size, referrer, tail }: BodyHashProps) => {
+    if (!isConnected) return "0x"
+
+    return ethers.utils.defaultAbiCoder.encode(
+        ["uint256", "uint256", "address", "bytes"],
+        [
+            nonce,
+            size,
+            referrer,
+            tail
+        ]
+    );
+}
+
+const getSignature = async ({ caller, nonce, size, referrer, tail }: SignatureProps) => {
+    const data = {
+        caller,
+        nonce,
+        size,
+        referrer,
+        tail
+    }
+
+    const response = await fetch("http://localhost:8000/spout/authorize/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    })
+
+
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+
+    const res = await response.json()
+
+    return res.signature;
+}
+
+const getTail = () => {
+    return "0x"
+}
+
 const Form = () => {
     const { address, isConnected } = useAccount()
+    const provider = useProvider()
+    const multicall = new Multicall({
+        ethersProvider: provider,
+        tryAggregate: true
+    });
 
     const [size, setSize] = useState(sizes.Sample);
     const [entities, setEntities] = useState<Entities>(initialEntities);
@@ -74,79 +134,33 @@ const Form = () => {
     const [referrerCollapsed, setReferrerCollapsed] = useState<boolean>(true);
     const [referrer, setReferrer] = useState<string>("");
 
-
     const [debouncedSize] = useDebounce(size, 500)
     const [debouncedEntities] = useDebounce(entities, 500)
     const [debouncedReferrer] = useDebounce(referrer, 500)
 
-    const [signature, setSignature] = useState<string>("");
+    const [transactionArgs, setTransactionArgs] = useState<TransactionArgs | undefined>();
 
-    const nonce = 1;
-    const tail = "0x"
+    const tail = getTail();
 
-    const referrerIsEthereumAddress = referrer.length === 42 && referrer.startsWith("0x");
+    const referrerIsEthereumAddress = debouncedReferrer.length === 42 && debouncedReferrer.startsWith("0x");
 
-    const free = 5;
-    const base = 0.0005;
-    const price = size > free ? size * base : 0;
-
-    const bodyHash = useMemo(() => {
-        if (!isConnected) return "0x"
-
-        return ethers.utils.defaultAbiCoder.encode(
-            ["uint256", "uint256", "address", "bytes"],
-            [
-                nonce,
-                debouncedSize,
-                referrerIsEthereumAddress ? debouncedReferrer : address,
-                tail
-            ]
-        );
-    }, [isConnected])
-
-    // TODO: Read nonce from the contract
-    // TODO: Read price from the contract
     // TODO: Figure out how to get value working
     // TODO: Build the tail
     // TODO: Right now when you change accounts, it's borked
 
-    const faucetContract = {
-        address: '0x711Ce9ea77B7f3B7A2718066133DC3C1888F4Bbe',
-        abi: DRIP_ABI,
-    }
-
-    const { data: priceRead, isLoading: isLoadingPrice, isError: isErrorPrice } = useContractRead({
-        ...faucetContract,
-        functionName: 'getPrice',
-        enabled: isConnected,
-        args: [
-            address,
-            size,
-            referrer ? referrer : address,
-            tail
-        ]
-    })
-
-    const { data: nonceRead, isLoading: isLoadingNonce, isError: isErrorNonce } = useContractRead({
-        ...faucetContract,
-        functionName: 'nonces',
-        enabled: isConnected,
-        args: [address]
-    })
-
-    console.log('Contract read data', priceRead, parseInt(nonceRead))
-
     const { config } = usePrepareContractWrite({
-        ...faucetContract,
+        ...FAUCET_CONTRACT,
         functionName: 'drip',
-        args: [bodyHash, signature],
-        enabled: isConnected && signature != "",
-        overrides: {
-            value: ethers.utils.parseEther(price.toString())
-        }
+        enabled: isConnected && transactionArgs !== undefined,
+        // args: transactionArgs,
+        ...transactionArgs
     })
 
-    const { write } = useContractWrite(config)
+    const contractWrite = useContractWrite(config)
+
+    const { data: txData, isLoading: isLoadingTx, isError: isErrorTx } = useWaitForTransaction({
+        hash: contractWrite.data?.hash,
+    })
 
     const onDragStart = (start: DragStart) => {
         setDraggingTaskId(start.draggableId);
@@ -173,45 +187,89 @@ const Form = () => {
         setDraggingTaskId(null);
     };
 
-    const onExport = async () => {
-        if (!write) return;
-        const tx = write()
-        console.log('tx', tx)
-        const receipt = await tx?.wait()
-        console.log('Receipt:', receipt)
-    }
-
     useEffect(() => {
-        const onFormStateChange = () => {
-            const data = {
+        const getMulticall = async ({ caller, size, referrer, tail }: MultiCallProps) => {
+            const faucetMulticalls: ContractCallContext[] = [
+                {
+                    reference: 'faucet',
+                    contractAddress: FAUCET_CONTRACT.address,
+                    abi: [
+                        FAUCET_INTERFACE.getFunction('price').format('full'),
+                        FAUCET_INTERFACE.getFunction('nonces').format('full')
+                    ],
+                    calls: [
+                        {
+                            reference: 'price',
+                            methodName: 'price',
+                            methodParameters: [
+                                caller,
+                                size,
+                                referrer,
+                                tail
+                            ],
+                        },
+                        {
+                            reference: 'nonce',
+                            methodName: 'nonces',
+                            methodParameters: [
+                                caller
+                            ],
+                        }
+                    ]
+                }
+            ]
+
+            const results: ContractCallResults = await multicall.call(faucetMulticalls)
+
+            const priceRead = ethers.utils.formatEther(
+                results.results.faucet.callsReturnContext[0].returnValues.toString()
+            )
+
+            const nonceRead = parseInt(
+                results.results.faucet.callsReturnContext[1].returnValues.toString()
+            )
+
+            return {
+                readPrice: priceRead,
+                readNonce: nonceRead
+            }
+        }
+
+        const onFormStateChange = async () => {
+            const referrerAddress = referrerIsEthereumAddress ? debouncedReferrer : address || undefined
+
+            const { readPrice, readNonce } = await getMulticall({
                 caller: address,
-                nonce,
                 size: debouncedSize,
-                referrer: referrerIsEthereumAddress ? debouncedReferrer : address,
+                referrer: referrerAddress,
                 tail
+            })
+
+            const signature = await getSignature({
+                caller: address,
+                nonce: readNonce + 1,
+                size: debouncedSize,
+                referrer: referrerAddress,
+                tail
+            })
+
+            const newTransactionArgs: TransactionArgs = {
+                args: [
+                    getBodyHash({
+                        isConnected,
+                        nonce: readNonce + 1,
+                        size: debouncedSize,
+                        referrer: referrerAddress,
+                        tail
+                    }),
+                    signature,
+                ],
+                overrides: {
+                    value: ethers.utils.parseEther(readPrice)
+                }
             }
 
-            fetch("http://localhost:8000/spout/authorize/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-
-                    return response;
-                })
-                .then(async (response) => {
-                    const res = await response.json()
-
-                    console.log('Signature:', res.signature)
-
-                    setSignature(res.signature)
-                });
+            setTransactionArgs(newTransactionArgs)
         }
 
         if (!isConnected) return
@@ -305,8 +363,13 @@ const Form = () => {
 
             <button
                 className="primary"
-                disabled={!write}
-            ><span>{price} <small>ETH</small> | Export Contacts</span></button>
+                disabled={!contractWrite.write}
+                onClick={() => contractWrite.write?.()}
+            >
+                <span>{
+                    ethers.utils.formatEther(transactionArgs?.overrides?.value ?? ethers.BigNumber.from(0))
+                } <small>ETH</small> | Export Contacts</span>
+            </button>
         </div>
     )
 }
