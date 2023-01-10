@@ -115,6 +115,7 @@ const getSignature = async ({ caller, nonce, size, referrer, tail }: SignaturePr
     return res.signature;
 }
 
+// TODO: Finish this when I figure out what the hell it's even going to contain.
 const getTail = () => {
     return "0x"
 }
@@ -143,10 +144,6 @@ const Form = () => {
     const tail = getTail();
 
     const referrerIsEthereumAddress = debouncedReferrer.length === 42 && debouncedReferrer.startsWith("0x");
-
-    // TODO: Figure out how to get value working
-    // TODO: Build the tail
-    // TODO: Right now when you change accounts, it's borked
 
     const { config } = usePrepareContractWrite({
         ...FAUCET_CONTRACT,
