@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class SourceIdentifier(models.Model):
     SOURCE_TYPES = (
         ("twitter_id", "Twitter ID"),
@@ -16,10 +15,8 @@ class SourceIdentifier(models.Model):
         ("lens_handle", "Lens Handle"),
     )
 
-    source_type = models.CharField(
-        max_length=255, choices=SOURCE_TYPES, default="twitter"
-    )
-    identifier = models.CharField(max_length=255, blank=True, null=True)
+    source_type = models.CharField(max_length=255, choices=SOURCE_TYPES)
+    value = models.CharField(max_length=255, blank=True, null=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

@@ -5,9 +5,9 @@ from .models import Source, SourceIdentifier
 
 @admin.register(SourceIdentifier)
 class SourceIdentifierAdmin(admin.ModelAdmin):
-    list_display = ["id", "source_type", "identifier"]
+    list_display = ["id", "source_type", "value"]
     list_filter = ["source_type"]
-    search_fields = ["id", "source_type", "identifier"]
+    search_fields = ["id", "source_type", "value"]
 
 
 @admin.register(Source)
