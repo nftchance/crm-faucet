@@ -15,12 +15,14 @@ class Job:
         name: str,
         func: Callable,
         trigger: Optional[str] = "* * * * *",
+        job_args: Optional[List[any]] = None,
         max_instances: Optional[int] = 1,
         replace_existing: Optional[bool] = True,
     ):
         self.name: str = name
         self.func: Callable = func
         self.trigger: str = trigger
+        self.job_args: tuple = job_args or []
         self.max_instances: int = max_instances
         self.replace_existing: bool = replace_existing
 
@@ -47,6 +49,7 @@ class JobManager:
         for job in self.jobs:
             scheduler.add_job(
                 job.func,
+                args=job.job_args,
                 id=job.name,
                 trigger=CronTrigger.from_crontab(job.trigger),
                 max_instances=job.max_instances,
