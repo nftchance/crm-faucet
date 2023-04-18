@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -14,9 +14,9 @@ class Job:
         self,
         name: str,
         func: Callable,
-        trigger: str = "* * * * *",
-        max_instances: int = 1,
-        replace_existing: bool = True,
+        trigger: Optional[str] = "* * * * *",
+        max_instances: Optional[int] = 1,
+        replace_existing: Optional[bool] = True,
     ):
         self.name: str = name
         self.func: Callable = func

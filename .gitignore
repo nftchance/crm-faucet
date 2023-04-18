@@ -1,5 +1,8 @@
+.vscode/
+
 database/
 venv/
+
 .env
 
 # Standard python .gitignore

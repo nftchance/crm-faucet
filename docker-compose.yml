@@ -13,3 +13,24 @@ services:
     hostname: database
     ports:
       - 5432:5432
+  api:
+    container_name: faucet-api
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    volumes:
+      - ./:/code
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    depends_on:
+      - database
+    links:
+      - database
+    command: >
+      sh -c "
+        python manage.py migrate --noinput &&
+        python manage.py runserver 0.0.0.0:8000
+      "
