@@ -11,10 +11,7 @@ SECRET_KEY = "django-insecure-ftet4hy2iehpe#7l-dga#f3%t)o_704%3lamh1n7*)qynxgtu@
 
 DEBUG = True
 
-# Fix CORS errors
-CORS_ORIGIN_ALLOW_ALL = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -97,9 +94,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser"),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
 }
 
@@ -122,4 +119,4 @@ MAINNET_PROVIDER = f"https://eth-mainnet.alchemyapi.io/v2/{ALCHEMY_KEY}"
 CONTRACT_ADDRESS = MAINNET_CONTRACT_ADDRESS if not DEBUG else TESTNET_CONTRACT_ADDRESS
 
 SIGNER_ADDRESS = os.getenv("SIGNER_ADDRESS", "SIGNER_ADDRESS")
-SIGNER_PRIVATE_KEY = f"{os.getenv('SIGNER_PRIVATE_KEY', 'SIGNER_PRIVATE_KEY')}"""
+SIGNER_PRIVATE_KEY = f"{os.getenv('SIGNER_PRIVATE_KEY', 'SIGNER_PRIVATE_KEY')}" ""
