@@ -67,7 +67,7 @@ DATABASES = {
         "NAME": os.getenv("PGDATABASE", "faucet"),
         "USER": os.getenv("PGUSER", "faucet"),
         "PASSWORD": os.getenv("PGPASSWORD", "faucet"),
-        "HOST": os.getenv("PGHOST", "localhost"),
+        "HOST": os.getenv("PGHOST", "host.docker.internal"),
         "PORT": os.getenv("PGPORT", "5432"),
     }
 }

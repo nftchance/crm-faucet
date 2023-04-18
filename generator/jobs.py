@@ -22,8 +22,8 @@ def delete_old_job_executions(max_age: int = 60 * 60) -> None:
 
 
 jobs: List[Job] = [
-    Job("generate_sources", generate_sources, trigger="0 0 0 * *"),
-    Job("delete_old_job_executions", delete_old_job_executions, trigger="0 0 * * *"),
+    Job("generate_sources", generate_sources),
+    Job("delete_old_job_executions", delete_old_job_executions),
 ]
 
 manager: JobManager = JobManager(jobs)
