@@ -97,21 +97,5 @@ REST_FRAMEWORK = {
 
 MINUTES_TO_STALL = 3
 
-TESTNET_CONTRACT_ADDRESS = os.getenv(
-    "TESTNET_CONTRACT_ADDRESS", "TESTNET_CONTRACT_ADDRESS"
-)
-MAINNET_CONTRACT_ADDRESS = os.getenv(
-    "MAINNET_CONTRACT_ADDRESS", "MAINNET_CONTRACT_ADDRESS"
-)
-
-ALCHEMY_KEY = os.getenv("ALCHEMY_KEY", "ALCHEMY_KEY")
-PROVIDER = (
-    f"https://eth-mainnet.alchemyapi.io/v2/{ALCHEMY_KEY}"
-    if not DEBUG
-    else "https://rpc.sepolia.org"
-)
-MAINNET_PROVIDER = f"https://eth-mainnet.alchemyapi.io/v2/{ALCHEMY_KEY}"
-CONTRACT_ADDRESS = MAINNET_CONTRACT_ADDRESS if not DEBUG else TESTNET_CONTRACT_ADDRESS
-
-SIGNER_ADDRESS = os.getenv("SIGNER_ADDRESS", "SIGNER_ADDRESS")
-SIGNER_PRIVATE_KEY = f"{os.getenv('SIGNER_PRIVATE_KEY', 'SIGNER_PRIVATE_KEY')}" ""
+ALCHEMY_KEY = os.getenv("ALCHEMY_KEY", "alchemy_key")
+PROVIDER = "https://eth-mainnet.alchemyapi.io/v2/{}".format(ALCHEMY_KEY)
