@@ -1,3 +1,4 @@
+from typing import List
 from django_apscheduler import util
 from django_apscheduler.models import DjangoJobExecution
 
@@ -16,13 +17,13 @@ def generate_sources() -> None:
 
 
 @util.close_old_connections
-def delete_old_job_executions(max_age=60 * 60) -> None:
+def delete_old_job_executions(max_age: int = 60 * 60) -> None:
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
 
-jobs = [
-    Job("generate_sources", generate_sources, trigger=("*/59", "*")),
+jobs: List[Job] = [
+    Job("generate_sources", generate_sources),
     Job("delete_old_job_executions", delete_old_job_executions),
 ]
 
-manager = JobManager(jobs)
+manager: JobManager = JobManager(jobs)

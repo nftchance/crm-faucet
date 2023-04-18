@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Callable, List
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -10,39 +11,44 @@ scheduler = BackgroundScheduler()
 
 class Job:
     def __init__(
-        self: object,
+        self,
         name: str,
-        func: callable,
-        trigger: tuple = ("*", "*/59"),
+        func: Callable,
+        trigger: str = "* * * * *",
         max_instances: int = 1,
         replace_existing: bool = True,
     ):
-        self.name = name
-        self.func = func
-        self.trigger = trigger
-        self.max_instances = max_instances
-        self.replace_existing = replace_existing
+        self.name: str = name
+        self.func: Callable = func
+        self.trigger: str = trigger
+        self.max_instances: int = max_instances
+        self.replace_existing: bool = replace_existing
 
     def __str__(self) -> str:
         return self.name
 
 
 class JobManager:
-    def __init__(self: object, jobs: list[Job], jobstore: str = "default", force=True):
-        self.jobstore = jobstore
-        self.jobs = jobs
+    def __init__(
+        self,
+        jobs: List[Job],
+        jobstore: str = "default",
+        force: bool = True,
+    ):
+        self.jobstore: str = jobstore
+        self.jobs: List[Job] = jobs
 
         if force:
             self.ready()
 
-    def ready(self: object) -> None:
+    def ready(self) -> None:
         scheduler.add_jobstore(DjangoJobStore(), self.jobstore)
 
         for job in self.jobs:
             scheduler.add_job(
-                f"{job}",
-                id=f"{job}",
-                trigger=CronTrigger.from_crontab(f"{job.trigger[0]} {job.trigger[1]}"),
+                job.func,
+                id=job.name,
+                trigger=CronTrigger.from_crontab(job.trigger),
                 max_instances=job.max_instances,
                 replace_existing=job.replace_existing,
             )

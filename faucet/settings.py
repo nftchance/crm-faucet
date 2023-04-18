@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_apscheduler",
     # first party app
+    "generator",
     "source",
 ]
 
