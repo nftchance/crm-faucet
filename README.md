@@ -74,7 +74,7 @@ When creating your Generator, you will need to provide the following information
 6. `response_column` - The column that will be used to start the generator.
     * When the response is returned, this is the column that will be used to create new Sources.
 
-**For example:**
+#### 📝 Example
 
 When working on ✨ [Charlie](https://github.com/nftchance/charlie) we wanted to create a Generator that would track the sources of individuals involved with onchain governance. With the following query, we can find all of the addresses that have had a governance token delegated to them by an address that wasn't themselves.
 
