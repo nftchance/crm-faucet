@@ -23,7 +23,7 @@ def delete_old_job_executions(max_age: int = 60 * 60) -> None:
 
 
 jobs: List[Job] = [
-    Job("generate_sources", generate_sources),
+    Job("generate_sources", generate_sources, trigger="*/59 * * * *"),
     Job("delete_old_job_executions", delete_old_job_executions),
 ]
 
