@@ -5,5 +5,5 @@ from .serializers import SourceSerializer
 
 
 class SourceViewSet(viewsets.ModelViewSet):
-    queryset = Source.objects.all()
+    queryset = Source.objects.with_identifiers().active()
     serializer_class = SourceSerializer

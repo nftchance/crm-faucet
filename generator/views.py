@@ -4,5 +4,5 @@ from .models import Generator
 from .serializers import GeneratorSerializer
 
 class GeneratorViewSet(viewsets.ModelViewSet):
-    queryset = Generator.objects.all()
+    queryset = Generator.objects.with_sources()
     serializer_class = GeneratorSerializer

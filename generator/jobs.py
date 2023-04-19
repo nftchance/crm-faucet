@@ -11,11 +11,9 @@ from .models import Generator
 
 @util.close_old_connections
 def generate_sources() -> None:
-    if settings.STALLING:
-        return
+    jobs = [Job(f"generator_{generator.id}: {generator.name}", generator.ready, trigger=generator.trigger) for generator in Generator.objects.active()]
 
-    for generator in Generator.objects.filter(is_active=True):
-        generator.ready()
+    JobManager(jobs, force=False)
 
 @util.close_old_connections
 def delete_old_job_executions(max_age: int = 60 * 60) -> None:

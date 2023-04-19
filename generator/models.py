@@ -3,6 +3,29 @@ from django.db import models
 from source.models import Source
 from utils.shroom import QUERY
 
+class GeneratorQuerySet(models.QuerySet):
+    def with_sources(self):
+        return self.prefetch_related("sources")
+
+    def active(self):
+        return self.filter(is_active=True)
+
+    def inactive(self):
+        return self.filter(is_active=False)
+
+class GeneratorManager(models.Manager):
+    def get_queryset(self):
+        return GeneratorQuerySet(self.model, using=self._db)
+
+    def with_sources(self):
+        return self.get_queryset().with_sources()
+
+    def active(self):
+        return self.get_queryset().active()
+
+    def inactive(self):
+        return self.get_queryset().inactive()
+
 class Generator(models.Model):
     def save(self, *args, **kwargs) -> None:
         super().save(*args, **kwargs)
@@ -44,6 +67,8 @@ class Generator(models.Model):
     
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = GeneratorManager()
 
     def __str__(self) -> str:
         return self.name

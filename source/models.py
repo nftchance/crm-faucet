@@ -24,6 +24,28 @@ class SourceIdentifier(models.Model):
     def __str__(self) -> str:
         return f"{self.source_type}:{self.identifier}"
 
+class SourceQuerySet(models.QuerySet):
+    def with_identifiers(self):
+        return self.prefetch_related("identifiers")
+    
+    def active(self):
+        return self.filter(is_active=True)
+    
+    def inactive(self):
+        return self.filter(is_active=False)
+
+class SourceManager(models.Manager):
+    def get_queryset(self):
+        return SourceQuerySet(self.model, using=self._db)
+
+    def with_identifiers(self):
+        return self.get_queryset().with_identifiers()
+    
+    def active(self):
+        return self.get_queryset().active()
+    
+    def inactive(self):
+        return self.get_queryset().inactive()
 
 class Source(models.Model):
     is_active = models.BooleanField(default=True)
@@ -33,6 +55,8 @@ class Source(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = SourceManager()
 
     def __str__(self) -> str:
         return self.address
