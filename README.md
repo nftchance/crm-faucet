@@ -193,3 +193,79 @@ As simple as that, Faucet will now start generating new sources for all of the a
 Now with this running, within seconds we have ~10,000+ people to target with our marketing and sales efforts. As more time goes on and we add more generators, we will be able to target more and more people with an increasingly accurate picture of who they are, what they care about and how to get in target them.
 
 Once you have everything running, just leave it running. The system will manage itself and you can focus on building the best product possible.
+
+### 📚 Community Generator Examples
+
+It can be difficult to get started with generators, so we have put together a few examples to help you get started. Feel free to use these as a starting point for your own generators. You can find detailed documentation how to write queries with [Flipside](http://flipsidecrypto.xyz) on the [GitBook](https://docs.flipsidecrypto.com/our-app/getting-started).
+
+#### ⏰ Foundation Bidders
+
+```sql
+SELECT  unique_bidder
+       ,MAX(block_timestamp) AS most_recent_date
+FROM
+(
+    SELECT  DISTINCT event_inputs:bidder::string AS unique_bidder
+            ,block_timestamp
+    FROM ethereum.core.fact_event_logs
+    WHERE event_name = 'ReserveAuctionFinalized'
+    AND block_timestamp >= DATEADD(day, -366, CURRENT_TIMESTAMP)
+    AND event_inputs:bidder::string IS NOT NULL 
+)
+GROUP BY  unique_bidder
+ORDER BY most_recent_date DESC;
+```
+
+#### 🖼️ Foundation Sellers
+
+```sql
+SELECT  unique_seller
+       ,MAX(block_timestamp) AS most_recent_date
+FROM
+(
+    SELECT  DISTINCT event_inputs:seller::string AS unique_seller
+           ,block_timestamp
+    FROM ethereum.core.fact_event_logs
+    WHERE event_name = 'ReserveAuctionFinalized'
+    AND block_timestamp >= DATEADD(day, -366, CURRENT_TIMESTAMP)
+    AND event_inputs:seller::string IS NOT NULL 
+)
+GROUP BY  unique_seller
+ORDER BY most_recent_date DESC;
+```
+
+#### 🏷️ Badge Holders
+
+```sql
+WITH balances AS (
+  SELECT DISTINCT
+    t.nft_to_address,
+    (
+      SELECT SUM(erc1155_value)
+      FROM polygon.core.ez_nft_transfers
+      WHERE nft_address = t.nft_address
+        AND nft_to_address = t.nft_to_address
+        AND tokenid = t.tokenid
+    ) AS "In",
+    (
+      SELECT COALESCE(SUM(erc1155_value),0)
+      FROM polygon.core.ez_nft_transfers
+      WHERE nft_address = t.nft_address
+        AND nft_from_address = t.nft_to_address
+        AND tokenid = t.tokenid
+    ) AS "Out",
+    ("In" - "Out") AS balance
+  FROM
+    polygon.core.ez_nft_transfers t
+  WHERE
+    nft_address = '{{organization_address}}'
+    AND tokenid = {{token_id}}
+    AND ("In" - "Out") > 0
+), holders AS (
+  SELECT DISTINCT
+    nft_to_address
+  FROM
+    balances
+)
+SELECT * FROM holders;
+```
