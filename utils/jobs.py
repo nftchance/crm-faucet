@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Callable, List, Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -8,6 +7,7 @@ from django_apscheduler.jobstores import DjangoJobStore
 
 scheduler = BackgroundScheduler()
 
+scheduler.add_jobstore(DjangoJobStore(), "default")
 
 class Job:
     def __init__(
@@ -34,17 +34,9 @@ class JobManager:
     def __init__(
         self,
         jobs: List[Job],
-        jobstore: str = "default",
         force: bool = True,
     ):
-        self.jobstore: str = jobstore
         self.jobs: List[Job] = jobs
-
-        if force:
-            self.ready()
-
-    def ready(self) -> None:
-        scheduler.add_jobstore(DjangoJobStore(), self.jobstore)
 
         for job in self.jobs:
             scheduler.add_job(
@@ -57,13 +49,13 @@ class JobManager:
             )
             print(f"Added: `{job}`")
 
+        if force:
+            self.ready()
+
+    def ready(self) -> None:
         try:
             print("Starting scheduler...")
             scheduler.start()
-
-            for job in scheduler.get_jobs():
-                job.modify(next_run_time=datetime.now())
-
         except KeyboardInterrupt:
             print("Stopping scheduler...")
             scheduler.shutdown()
