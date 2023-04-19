@@ -1,5 +1,3 @@
-DEBUG = True
-
 ALLOWED_HOSTS = ["*", "host.docker.internal"]
 
 INTERNAL_IPS = [
