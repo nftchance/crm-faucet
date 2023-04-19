@@ -37,7 +37,7 @@ class Source(models.Model):
         return self.address
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ["-updated", "-created", "is_active"]
 
 class SourceIdentifier(models.Model):
     SOURCE_TYPES = (
@@ -64,3 +64,6 @@ class SourceIdentifier(models.Model):
 
     def __str__(self) -> str:
         return f"{self.source_type}:{self.identifier}"
+
+    class Meta:
+        ordering = ["-updated", "-created"]

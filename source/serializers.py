@@ -10,6 +10,8 @@ class SourceIdentiferSerializer(serializers.ModelSerializer):
 
 
 class SourceSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="source-detail")
+
     identifiers = SourceIdentiferSerializer(many=True, read_only=True)
 
     class Meta:
