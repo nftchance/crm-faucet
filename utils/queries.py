@@ -1,57 +1,27 @@
 BALANCES = """
-    SELECT
-    USER_ADDRESS AS ADDRESS,
-    BALANCE,
-    BLOCK_TIMESTAMP
-    FROM
-        ethereum.core.fact_eth_balances
-        WHERE
-        USER_ADDRESS IN ({0})
-        QUALIFY ROW_NUMBER() OVER (PARTITION BY USER_ADDRESS ORDER BY BLOCK_TIMESTAMP DESC) = 1
+SELECT
+USER_ADDRESS AS ADDRESS,
+BALANCE,
+BLOCK_TIMESTAMP
+FROM
+    ethereum.core.fact_eth_balances
+    WHERE
+    USER_ADDRESS IN ({0})
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY USER_ADDRESS ORDER BY BLOCK_TIMESTAMP DESC) = 1
 """
 
 ENS = """
-    SELECT
-    OWNER,
-    REPLACE(EMAIL,
-        chr(0), '') as EMAIL,
-    ENS_NAME,
-    REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(GITHUB, 
-        'https', ''), 
-        'http', ''), 
-        'github.com', ''),
-        ':', ''), 
-        '/', ''), 
-        '@', ''),   
-        chr(0), '') as GITHUB,
-    REPLACE(REDDIT,
-        chr(0), '') as REDDIT,
-    REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(TELEGRAM, 
-        'https', ''), 
-        'http', ''), 
-        't.me', ''),
-        ':', ''), 
-        '/', ''), 
-        '@', ''), 
-        '#', ''), 
-        chr(0), '') as TELEGRAM,
-    REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(TWITTER, 
-        'https', ''), 
-        'http', ''), 
-        'twitter.com', ''),
-        ':', ''), 
-        '/', ''), 
-        '@', ''), 
-        chr(0), '') as TWITTER,
-    TOKENID
-    FROM
-    crosschain.core.ez_ens
-    WHERE
-    (
-        GITHUB IS NOT NULL
-        OR TWITTER IS NOT NULL
-        OR TELEGRAM IS NOT NULL
-    )
+SELECT  OWNER
+    ,REPLACE(EMAIL,chr(0),'')                                                                                                                    AS EMAIL
+    ,ENS_NAME
+    ,REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(GITHUB,'https',''),'http',''),'github.com',''),':',''),'/',''),'@',''),chr(0),'')   AS GITHUB
+    ,REPLACE(REDDIT,chr(0),'')                                                                                                                   AS REDDIT
+    ,REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(TELEGRAM,'https',''),'http',''),'t.me',''),':',''),'/',''),'@',''),'#',''),chr(0),'') AS TELEGRAM
+    ,REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(TWITTER,'https',''),'http',''),'twitter.com',''),':',''),'/',''),'@',''),chr(0),'') AS TWITTER
+    ,TOKENID
+FROM crosschain.core.ez_ens
+WHERE ( GITHUB IS NOT NULL OR TWITTER IS NOT NULL OR TELEGRAM IS NOT NULL )
+AND ADDRESS IN ({0})
 """
 
 LENS = """
