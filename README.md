@@ -184,8 +184,7 @@ As simple as that, Faucet will now start generating new sources for all of the a
             "address": "0x6c94b001b64374e50061e23e99756a3978a63270",
             "created": "2023-04-19T05:04:23.545256Z",
             "updated": "2023-04-19T05:04:23.545268Z"
-        },
-        ...
+        }
     ]
 }
 ```
