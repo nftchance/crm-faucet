@@ -38,11 +38,11 @@ def ens() -> None:
 
 @util.close_old_connections
 def delete_stale_sources() -> None:
-    Source.objects.filter(updated_at__lte=django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)).order_by('updated_at').delete()
+    Source.objects.filter(updated__lte=django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)).order_by('updated').delete()
 
 @util.close_old_connections
 def delete_stale_source_identifiers() -> None:
-    SourceIdentifier.objects.filter(updated_at__lte=django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)).order_by('updated_at').delete()
+    SourceIdentifier.objects.filter(updated__lte=django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)).order_by('updated').delete()
 
 jobs: List[Job] = [
     Job("ens", ens, trigger="*/59 * * * *"),
