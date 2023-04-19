@@ -10,26 +10,20 @@ from utils.jobs import Job, JobManager
 from .models import Generator
 
 @util.close_old_connections
-def generate_sources(generator: Generator) -> None:
+def generate_sources() -> None:
     if settings.STALLING:
         return
 
-    generator.ready()
+    for generator in Generator.objects.filter(is_active=True):
+        generator.ready()
 
 @util.close_old_connections
 def delete_old_job_executions(max_age: int = 60 * 60) -> None:
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
-generator_jobs: List[Job] = [
-    Job(
-        f"generator_{generator.id}", 
-        generate_sources, 
-        trigger=generator.trigger, 
-        job_args=[generator.id]
-    ) for generator in Generator.objects.active()
-]
 
-jobs: List[Job] = generator_jobs + [
+jobs: List[Job] = [
+    Job("generate_sources", generate_sources),
     Job("delete_old_job_executions", delete_old_job_executions),
 ]
 

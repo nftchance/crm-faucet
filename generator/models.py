@@ -1,30 +1,8 @@
+from typing import List
 from django.db import models
 
 from source.models import Source
 from utils.shroom import QUERY
-
-class GeneratorQuerySet(models.QuerySet):
-    def active(self) -> "GeneratorQuerySet":
-        return self.filter(is_active=True)
-
-    def inactive(self) -> "GeneratorQuerySet":
-        return self.filter(is_active=False)
-
-    def with_sources(self) -> "GeneratorQuerySet":
-        return self.prefetch_related("sources")
-
-class GeneratorManager(models.Manager):
-    def get_queryset(self) -> GeneratorQuerySet:
-        return GeneratorQuerySet(self.model, using=self._db)
-
-    def active(self) -> GeneratorQuerySet:
-        return self.get_queryset().active()
-
-    def inactive(self) -> GeneratorQuerySet:
-        return self.get_queryset().inactive()
-
-    def with_sources(self) -> GeneratorQuerySet:
-        return self.get_queryset().with_sources()
 
 class Generator(models.Model):
     def save(self, *args, **kwargs) -> None:
@@ -68,23 +46,27 @@ class Generator(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    objects = GeneratorManager()
-
     def __str__(self) -> str:
         return self.name
 
     def ready(self) -> None:
         if self.request_type == self.SQL:
-            self._ready_sql()
+            self.sql()
 
-    def _ready_sql(self) -> None:
+    def sql(self) -> None:
         response = QUERY(self.request_body)
-
         if not response:
             return
 
-        self.sources.bulk_create([
-            Source(address=address)
-            for address in [record[self.response_column] for record in response.records]
-            if not Source.objects.filter(address=address).exists()
-        ])
+        addresses = {record[self.response_column] for record in response.records}
+        db_addresses = set(Source.objects.filter(address__in=addresses).values_list("address", flat=True))
+
+        new_addresses = addresses - db_addresses
+        new_sources = [Source(address=address) for address in new_addresses]
+
+        Source.objects.bulk_create(new_sources)
+
+        sources = Source.objects.filter(address__in=addresses)
+
+        self.sources.add(*sources)
+        self.save()

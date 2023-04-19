@@ -36,3 +36,6 @@ class Source(models.Model):
 
     def __str__(self) -> str:
         return self.address
+
+    class Meta:
+        ordering = ["-created"]
