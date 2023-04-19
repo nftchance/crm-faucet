@@ -1,4 +1,4 @@
-# 💧 Faucet: Driving Higher Conversion Rates in Web3
+# 💧 Faucet: Higher Conversion Rates in Web3
 
 ![Faucet](./cover.png)
 
