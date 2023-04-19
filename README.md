@@ -29,8 +29,7 @@ Getting up and running with Faucet is as simple as configuring your environment 
 * Copy-pasting `.env.example`
 * Rename it to `.env`
 * Set the values of the variables
-    1. `ALCHEMY_KEY` - Your [Alchemy](https://www.alchemy.com/) key.
-    2. `SHROOM_KEY` - Your [ShroomDK](https://sdk.flipsidecrypto.xyz/shroomdk) key.
+    1. `SHROOM_KEY` - Your [ShroomDK](https://sdk.flipsidecrypto.xyz/shroomdk) key.
 
 With your static files prepared all that is left to do is running the following command:
 
