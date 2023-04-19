@@ -1,3 +1,5 @@
+import django
+
 from typing import List
 
 from django_apscheduler import util
@@ -34,8 +36,18 @@ def ens() -> None:
 
     SourceIdentifier.objects.bulk_create(identifiers)
 
+@util.close_old_connections
+def delete_stale_sources() -> None:
+    Source.objects.filter(updated_at__lte=django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)).order_by('updated_at').delete()
+
+@util.close_old_connections
+def delete_stale_source_identifiers() -> None:
+    SourceIdentifier.objects.filter(updated_at__lte=django.utils.timezone.now() - django.utils.timezone.timedelta(days=30)).order_by('updated_at').delete()
+
 jobs: List[Job] = [
     Job("ens", ens, trigger="*/59 * * * *"),
+    Job("delete_stale_sources", delete_stale_sources, trigger="*/59 * * * *"),
+    Job("delete_stale_source_identifiers", delete_stale_source_identifiers, trigger="*/59 * * * *"),
 ]
 
 manager = JobManager(jobs, force=False)

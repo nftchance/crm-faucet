@@ -191,3 +191,5 @@ As simple as that, Faucet will now start generating new sources for all of the a
 ```
 
 Now with this running, within seconds we have ~10,000+ people to target with our marketing and sales efforts. As more time goes on and we add more generators, we will be able to target more and more people with an increasingly accurate picture of who they are, what they care about and how to get in target them.
+
+Once you have everything running, just leave it running. The system will manage itself and you can focus on building the best product possible.
