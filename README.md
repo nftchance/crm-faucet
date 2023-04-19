@@ -81,13 +81,13 @@ When working on ✨ [Charlie](https://github.com/nftchance/charlie) we wanted to
 ```sql
 WITH ethereum_contracts AS
 (
-	SELECT  BLOCK_TIMESTAMP
-	       ,CONTRACT_NAME
-	       ,CONTRACT_ADDRESS
-	       ,EVENT_INPUTS
+    SELECT  BLOCK_TIMESTAMP
+           ,CONTRACT_NAME
+           ,CONTRACT_ADDRESS
+           ,EVENT_INPUTS
            ,ORIGIN_FROM_ADDRESS
-	FROM ethereum.core.fact_event_logs
-	WHERE TOPICS[0] = '0x3134e8a2e6d97e929a7e54011ea5485d7d196dd5f0ba4d4ef95803e8e3fc257f' 
+    FROM ethereum.core.fact_event_logs
+    WHERE TOPICS[0] = '0x3134e8a2e6d97e929a7e54011ea5485d7d196dd5f0ba4d4ef95803e8e3fc257f' 
 ), ethereum_delegates AS (
 SELECT  DISTINCT(EVENT_INPUTS:toDelegate) AS "Delegate"
 FROM ethereum_contracts
