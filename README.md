@@ -49,7 +49,9 @@ With Faucet running, you can access the following endpoints:
 
 ### 🏭 Creating a Generator
 
-Generators are the key driving function of Faucet. They are responsible for taking a source and generating a new source. The new source is then used to generate another source and so on. Starting as a Flipside query, Faucet can generate a source that contains all of the social networks for an audience while keeping everything in sync without manual maintenance in the future.
+Generators are the key driving function of Faucet. They are responsible for taking a source and generating a new source. The new source is then used to generate another source and so on.
+
+Starting as a [Flipside](https://flipsidecrypto.xyz) query, Faucet can generate a source that contains all of the social networks for an audience while keeping everything in sync without manual maintenance in the future.
 
 To create a generator, navigate to the API page of the [generator](http://localhost:8000/generator/) endpoint.
 
@@ -63,7 +65,7 @@ When creating your Generator, you will need to provide the following information
     * This can be a cron expression or a time interval. In the API interface you can choose from a dropdown of ranging frequencies.
 4. `request_type` - The type of request that will be used to start the generator.
     * This can either be `SQL` or `HTTP`.
-    * When using `SQL`, the request will be retrieved from Flipside using Shroom.DK.
+    * When using `SQL`, the request will be retrieved from [Flipside](https://flipsidecrypto.xyz) using [ShroomDK](https://sdk.flipsidecrypto.xyz/shroomdk).
     * When using `HTTP`, the request will be sent to the endpoint specified in `request_body`.
 5. `request_body` - The body of the request that will be used to start the generator.
     * This can either be a SQL query or a HTTP endpoint.
@@ -106,3 +108,86 @@ With this ready, we will set the following values:
 * `response_column` - `delegate`
 
 As simple as that, Faucet will now start generating new sources for all of the addresses that have been delegated to.
+
+```json
+{
+    "count": 9686,
+    "next": "http://localhost:8000/sources/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 9686,
+            "url": "http://localhost:8000/sources/9686/",
+            "identifiers": [],
+            "is_active": true,
+            "address": "0x37736cb01e41a7ad592fc3b3e472787769b3234d",
+            "created": "2023-04-19T05:04:23.545393Z",
+            "updated": "2023-04-19T05:04:23.545404Z"
+        },
+        {
+            "id": 9685,
+            "url": "http://localhost:8000/sources/9685/",
+            "identifiers": [],
+            "is_active": true,
+            "address": "0x1ce139b73dbc1d855e4b360856ac3885558fc5f8",
+            "created": "2023-04-19T05:04:23.545359Z",
+            "updated": "2023-04-19T05:04:23.545370Z"
+        },
+        {
+            "id": 9684,
+            "url": "http://localhost:8000/sources/9684/",
+            "identifiers": [],
+            "is_active": true,
+            "address": "0x1bdbcbee53572deb2c1ea6d65479bd5e7b0afe25",
+            "created": "2023-04-19T05:04:23.545324Z",
+            "updated": "2023-04-19T05:04:23.545336Z"
+        },
+        {
+            "id": 9683,
+            "url": "http://localhost:8000/sources/9683/",
+            "identifiers": [],
+            "is_active": true,
+            "address": "0x8c19e0b2502405ad1cb52aa34269f5e90ee65aa5",
+            "created": "2023-04-19T05:04:23.545291Z",
+            "updated": "2023-04-19T05:04:23.545302Z"
+        },
+        {
+            "id": 9682,
+            "url": "http://localhost:8000/sources/9682/",
+            "identifiers": [
+                {
+                    "id": 2488,
+                    "source_type": "twitter_username",
+                    "value": "joebart",
+                    "created": "2023-04-19T05:05:27.456357Z",
+                    "updated": "2023-04-19T05:05:27.456361Z",
+                    "source": 9682
+                },
+                {
+                    "id": 2487,
+                    "source_type": "ens_name",
+                    "value": "joebart",
+                    "created": "2023-04-19T05:05:27.456345Z",
+                    "updated": "2023-04-19T05:05:27.456348Z",
+                    "source": 9682
+                },
+                {
+                    "id": 2486,
+                    "source_type": "email",
+                    "value": "joebart@hey.com",
+                    "created": "2023-04-19T05:05:27.456332Z",
+                    "updated": "2023-04-19T05:05:27.456336Z",
+                    "source": 9682
+                }
+            ],
+            "is_active": true,
+            "address": "0x6c94b001b64374e50061e23e99756a3978a63270",
+            "created": "2023-04-19T05:04:23.545256Z",
+            "updated": "2023-04-19T05:04:23.545268Z"
+        },
+        ...
+    ]
+}
+```
+
+Now with this running, within seconds we have ~10,000+ people to target with our marketing and sales efforts. As more time goes on and we add more generators, we will be able to target more and more people with an increasingly accurate picture of who they are, what they care about and how to get in target them.
