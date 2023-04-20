@@ -9,11 +9,20 @@ from utils.jobs import Job, JobManager
 
 from .models import Generator
 
+
 @util.close_old_connections
 def generate_sources() -> None:
-    jobs = [Job(f"generator_{generator.id}: {generator.name}", generator.ready, trigger=generator.trigger) for generator in Generator.objects.active()]
+    jobs = [
+        Job(
+            f"generator_{generator.id}: {generator.name}",
+            generator.ready,
+            trigger=generator.trigger,
+        )
+        for generator in Generator.objects.active()
+    ]
 
     JobManager(jobs, force=False)
+
 
 @util.close_old_connections
 def delete_old_job_executions(max_age: int = 60 * 60) -> None:
@@ -21,7 +30,7 @@ def delete_old_job_executions(max_age: int = 60 * 60) -> None:
 
 
 jobs: List[Job] = [
-    Job("generate_sources", generate_sources, trigger="*/59 * * * *"),
+    Job("generate_sources", generate_sources, trigger="* * * * *"),
     Job("delete_old_job_executions", delete_old_job_executions),
 ]
 

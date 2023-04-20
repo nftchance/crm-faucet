@@ -44,6 +44,7 @@ With Faucet running, you can access the following endpoints:
 * [/](http://localhost:8000/) - The root endpoint that returns an API overview.
 * [/docs/](http://localhost:8000/docs/) - The endpoint used to view the API documentation.
 * [/generator/](http://localhost:8000/generator/) - The endpoint used to manage and view source generators.
+* [/generator/<generator_id>/csv/](http://localhost:8000/1/csv/) - The endpoint used to manage and view source generators.
 * [/source/](http://localhost:8000/source/) - The endpoint used to manage and view sources.
 
 ## 🏭 Creating a Generator
@@ -115,49 +116,13 @@ As simple as that, Faucet will now start generating new sources for all of the a
     "previous": null,
     "results": [
         {
-            "id": 9686,
-            "url": "http://localhost:8000/sources/9686/",
-            "identifiers": [],
-            "is_active": true,
-            "address": "0x37736cb01e41a7ad592fc3b3e472787769b3234d",
-            "created": "2023-04-19T05:04:23.545393Z",
-            "updated": "2023-04-19T05:04:23.545404Z"
-        },
-        {
-            "id": 9685,
-            "url": "http://localhost:8000/sources/9685/",
-            "identifiers": [],
-            "is_active": true,
-            "address": "0x1ce139b73dbc1d855e4b360856ac3885558fc5f8",
-            "created": "2023-04-19T05:04:23.545359Z",
-            "updated": "2023-04-19T05:04:23.545370Z"
-        },
-        {
-            "id": 9684,
-            "url": "http://localhost:8000/sources/9684/",
-            "identifiers": [],
-            "is_active": true,
-            "address": "0x1bdbcbee53572deb2c1ea6d65479bd5e7b0afe25",
-            "created": "2023-04-19T05:04:23.545324Z",
-            "updated": "2023-04-19T05:04:23.545336Z"
-        },
-        {
-            "id": 9683,
-            "url": "http://localhost:8000/sources/9683/",
-            "identifiers": [],
-            "is_active": true,
-            "address": "0x8c19e0b2502405ad1cb52aa34269f5e90ee65aa5",
-            "created": "2023-04-19T05:04:23.545291Z",
-            "updated": "2023-04-19T05:04:23.545302Z"
-        },
-        {
             "id": 9682,
             "url": "http://localhost:8000/sources/9682/",
             "identifiers": [
                 {
                     "id": 2488,
                     "source_type": "twitter_username",
-                    "value": "joebart",
+                    "value": "example_username",
                     "created": "2023-04-19T05:05:27.456357Z",
                     "updated": "2023-04-19T05:05:27.456361Z",
                     "source": 9682
@@ -165,7 +130,7 @@ As simple as that, Faucet will now start generating new sources for all of the a
                 {
                     "id": 2487,
                     "source_type": "ens_name",
-                    "value": "joebart",
+                    "value": "example_username",
                     "created": "2023-04-19T05:05:27.456345Z",
                     "updated": "2023-04-19T05:05:27.456348Z",
                     "source": 9682
@@ -173,7 +138,7 @@ As simple as that, Faucet will now start generating new sources for all of the a
                 {
                     "id": 2486,
                     "source_type": "email",
-                    "value": "joebart@hey.com",
+                    "value": "example@hey.com",
                     "created": "2023-04-19T05:05:27.456332Z",
                     "updated": "2023-04-19T05:05:27.456336Z",
                     "source": 9682
@@ -260,4 +225,52 @@ WITH balances AS
 )
 SELECT  *
 FROM holders;
+```
+
+#### NFT Token Holders
+
+```sql
+WITH milady_incoming AS
+(
+    SELECT  DISTINCT NFT_TO_ADDRESS
+    FROM ethereum.core.ez_nft_transfers
+    WHERE NFT_ADDRESS = lower('0x5af0d9827e0c53e4799bb226655a1de152a425a5') 
+), milady_outgoing AS
+(
+    SELECT  DISTINCT NFT_FROM_ADDRESS
+            ,NFT_TO_ADDRESS
+    FROM ethereum.core.ez_nft_transfers
+    WHERE NFT_ADDRESS = lower('0x5af0d9827e0c53e4799bb226655a1de152a425a5') 
+), milady_holders AS
+(
+    SELECT  mi.NFT_TO_ADDRESS AS wallets
+    FROM milady_incoming mi
+    LEFT JOIN milady_outgoing mo
+    ON mi.NFT_TO_ADDRESS = mo.NFT_TO_ADDRESS
+    WHERE mo.NFT_TO_ADDRESS IS NULL 
+), nft_transfers AS
+(
+    SELECT  NFT_TO_ADDRESS AS wallets
+            ,'1'            AS flag
+            ,NFT_ADDRESS
+    FROM ethereum.core.ez_nft_transfers
+    WHERE NFT_ADDRESS IN ( lower('0x5af0d9827e0c53e4799bb226655a1de152a425a5'), lower('0xed5af388653567af2f388e6224dc7c4b3241c544') ) 
+    UNION ALL
+    SELECT  NFT_FROM_ADDRESS AS wallets
+            ,'-1'             AS flag
+            ,NFT_ADDRESS
+    FROM ethereum.core.ez_nft_transfers
+    WHERE NFT_ADDRESS IN ( lower('0x5af0d9827e0c53e4799bb226655a1de152a425a5'), lower('0xed5af388653567af2f388e6224dc7c4b3241c544') ) 
+), milady_balances AS
+(
+    SELECT  wallets
+            ,SUM(flag) AS nfts
+    FROM nft_transfers
+    WHERE NFT_ADDRESS = lower('0x5af0d9827e0c53e4799bb226655a1de152a425a5')
+    GROUP BY  1
+    HAVING 2 > 0
+    ORDER BY 2 DESC
+)
+SELECT  *
+FROM milady_balances;
 ```
