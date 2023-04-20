@@ -44,7 +44,7 @@ With Faucet running, you can access the following endpoints:
 * [/](http://localhost:8000/) - The root endpoint that returns an API overview.
 * [/docs/](http://localhost:8000/docs/) - The endpoint used to view the API documentation.
 * [/generator/](http://localhost:8000/generator/) - The endpoint used to manage and view source generators.
-* [/generator/<generator_id>/csv/](http://localhost:8000/1/csv/) - The endpoint used to manage and view source generators.
+* [/generator/<generator_id>/csv/](http://localhost:8000/1/csv/) - The endpoint used to download a CSV of the sources in a Generator.
 * [/source/](http://localhost:8000/source/) - The endpoint used to manage and view sources.
 
 ## 🏭 Creating a Generator
